@@ -1,0 +1,21 @@
+# dependencies
+node_modules
+.pnp
+.pnp.js
+
+# next
+.next
+out
+.vercel
+
+# env / secrets
+.env
+.env*.local
+
+# debug / os
+npm-debug.log*
+.DS_Store
+*.pem
+
+# archives (site lives in-repo now)
+*.zip
