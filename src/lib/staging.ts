@@ -25,13 +25,18 @@ export function isStagingHost(host: string) {
   );
 }
 
-/** Staging / local / preview only. Never on the public domain. */
-export function isReviewUiEnabled(host: string) {
+/** Staging host always. Local/preview only with ?review=1. Never on the public domain. */
+export function isReviewUiEnabled(host: string, search = "") {
   if (isProductionHost(host)) return false;
   if (isStagingHost(host)) return true;
+  const params = new URLSearchParams(
+    search.startsWith("?") ? search.slice(1) : search,
+  );
+  const flagged =
+    params.get("review") === "1" || params.get("staging") === "1";
   const bare = hostnameOf(host);
-  if (bare === "localhost" || bare === "127.0.0.1") return true;
-  if (process.env.NEXT_PUBLIC_VERCEL_ENV === "preview") return true;
+  if (bare === "localhost" || bare === "127.0.0.1") return flagged;
+  if (process.env.NEXT_PUBLIC_VERCEL_ENV === "preview") return flagged;
   return false;
 }
 

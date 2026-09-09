@@ -226,7 +226,7 @@
     font-size: 0.82rem;
     font-weight: 700;
     padding: 0.5rem 0.9rem;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     background: color-mix(in srgb, var(--trail) 88%, white);
     color: var(--ink);
     border: 1px solid color-mix(in srgb, var(--trail) 60%, var(--ink));
@@ -256,9 +256,7 @@
     color: var(--ink);
     font-weight: 700;
     font-size: 0.95rem;
-    padding: 0.9rem 1.35rem;
-    border-radius: var(--radius-sm);
-    border: none;
+    border-radius: var(--radius-md);
     cursor: pointer;
     transition: transform 180ms ease, filter 180ms ease, background 160ms ease;
   }
@@ -271,6 +269,7 @@
   .btn-cta--sm {
     padding: 0.55rem 0.95rem;
     font-size: 0.82rem;
+    border-radius: var(--radius-md);
   }
 
   .btn-ghost {
@@ -282,7 +281,7 @@
     font-weight: 600;
     font-size: 0.95rem;
     padding: 0.9rem 1.35rem;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     border: 1px solid color-mix(in srgb, var(--snow) 55%, transparent);
     cursor: pointer;
     transition: background 160ms ease, border-color 160ms ease;

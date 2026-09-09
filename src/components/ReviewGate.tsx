@@ -8,7 +8,7 @@ export function ReviewGate() {
   const [Editor, setEditor] = useState<ComponentType | null>(null);
 
   useEffect(() => {
-    if (!isReviewUiEnabled(window.location.host)) return;
+    if (!isReviewUiEnabled(window.location.host, window.location.search)) return;
     let cancelled = false;
     void import("./ReviewMode").then((mod) => {
       if (!cancelled) setEditor(() => mod.ReviewMode);

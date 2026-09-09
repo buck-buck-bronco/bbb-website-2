@@ -9,7 +9,7 @@ function subscribeNoop() {
 }
 
 function getShowEdits() {
-  return isReviewUiEnabled(window.location.host);
+  return isReviewUiEnabled(window.location.host, window.location.search);
 }
 
 /** Staging-only chrome so Melissa can open her feedback inbox. Hidden on the live site. */
