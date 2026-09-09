@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 type Props = {
   value: number;
@@ -9,10 +9,21 @@ type Props = {
   since?: string;
 };
 
+function subscribeMotion(onStoreChange: () => void) {
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  mq.addEventListener("change", onStoreChange);
+  return () => mq.removeEventListener("change", onStoreChange);
+}
+
 export function CommunityCounter({ value, suffix = "+", label, since }: Props) {
-  const [display, setDisplay] = useState(0);
+  const [animated, setAnimated] = useState(0);
   const [started, setStarted] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
+  const reduceMotion = useSyncExternalStore(
+    subscribeMotion,
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+    () => false,
+  );
 
   useEffect(() => {
     const el = ref.current;
@@ -31,19 +42,21 @@ export function CommunityCounter({ value, suffix = "+", label, since }: Props) {
   }, []);
 
   useEffect(() => {
-    if (!started) return;
+    if (!started || reduceMotion) return;
     const duration = 1600;
     const start = performance.now();
     let frame = 0;
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / duration);
       const eased = 1 - Math.pow(1 - t, 3);
-      setDisplay(Math.round(value * eased));
+      setAnimated(Math.round(value * eased));
       if (t < 1) frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [started, value]);
+  }, [started, value, reduceMotion]);
+
+  const display = reduceMotion ? value : animated;
 
   return (
     <div

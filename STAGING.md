@@ -2,6 +2,8 @@
 
 Share this with your reviewer so she can pick elements, leave comments, toggle keep/hide, and swap pictures. She (and Damien) can open **Your edits** anytime.
 
+The review dock and **Your edits** links are **staging / localhost / preview only**. They never render on `buckbuckbronco.com`.
+
 ## Staging password (Damien)
 
 **Password:** `SmileBucked13`

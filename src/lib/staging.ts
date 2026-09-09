@@ -9,16 +9,34 @@ const PRODUCTION_HOSTS = new Set([
   "www.buckbuckbronco.com",
 ]);
 
+export function hostnameOf(host: string) {
+  return host.split(":")[0]?.toLowerCase() ?? "";
+}
+
 export function isProductionHost(host: string) {
-  const bare = host.split(":")[0]?.toLowerCase() ?? "";
-  return PRODUCTION_HOSTS.has(bare);
+  return PRODUCTION_HOSTS.has(hostnameOf(host));
 }
 
 export function isStagingHost(host: string) {
+  const bare = hostnameOf(host);
   return (
-    host.includes("buck-buck-bronco-staging") ||
-    host.startsWith("staging.")
+    bare.includes("buck-buck-bronco-staging") ||
+    bare.startsWith("staging.")
   );
+}
+
+/** Staging / local / preview only. Never on the public domain. */
+export function isReviewUiEnabled(host: string) {
+  if (isProductionHost(host)) return false;
+  if (isStagingHost(host)) return true;
+  const bare = hostnameOf(host);
+  if (bare === "localhost" || bare === "127.0.0.1") return true;
+  if (process.env.NEXT_PUBLIC_VERCEL_ENV === "preview") return true;
+  return false;
+}
+
+export function isReviewPath(pathname: string) {
+  return pathname === "/review" || pathname.startsWith("/review/");
 }
 
 export function stagingLockEnabled(host: string) {

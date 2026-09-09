@@ -3,6 +3,8 @@ import {
   STAGING_COOKIE,
   STAGING_GATE_PATH,
   getStagingPassword,
+  isProductionHost,
+  isReviewPath,
   stagingLockEnabled,
 } from "@/lib/staging";
 
@@ -13,11 +15,23 @@ function isAuthed(req: NextRequest): boolean {
 
 export function middleware(req: NextRequest) {
   const host = req.headers.get("host") ?? "";
+  const { pathname } = req.nextUrl;
+
+  if (isProductionHost(host)) {
+    if (isReviewPath(pathname)) {
+      const home = req.nextUrl.clone();
+      home.pathname = "/";
+      home.search = "";
+      return NextResponse.redirect(home, 308);
+    }
+    if (pathname.startsWith("/api/review")) {
+      return NextResponse.json({ error: "Not found" }, { status: 404 });
+    }
+  }
+
   if (!stagingLockEnabled(host)) {
     return NextResponse.next();
   }
-
-  const { pathname } = req.nextUrl;
 
   if (
     pathname === STAGING_GATE_PATH ||

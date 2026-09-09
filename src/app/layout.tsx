@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Bebas_Neue, Source_Sans_3 } from "next/font/google";
-import { ReviewMode } from "@/components/ReviewMode";
+import { ReviewGate } from "@/components/ReviewGate";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
 import { buildGraph } from "@/lib/seo/schema";
 import { siteConfig } from "@/lib/site";
@@ -41,8 +41,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: siteConfig.images.og,
-        width: 1800,
-        height: 2222,
+        width: 1200,
+        height: 630,
         alt: "Ford Bronco on the trail: Buck Buck Bronco",
       },
     ],
@@ -90,7 +90,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
-        <ReviewMode />
+        <ReviewGate />
       </body>
     </html>
   );

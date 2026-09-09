@@ -7,22 +7,22 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/staging-gate", "/api/"],
+        disallow: ["/staging-gate", "/review", "/api/"],
       },
       {
         userAgent: "GPTBot",
         allow: "/",
-        disallow: ["/staging-gate", "/api/"],
+        disallow: ["/staging-gate", "/review", "/api/"],
       },
       {
         userAgent: "ClaudeBot",
         allow: "/",
-        disallow: ["/staging-gate", "/api/"],
+        disallow: ["/staging-gate", "/review", "/api/"],
       },
       {
         userAgent: "PerplexityBot",
         allow: "/",
-        disallow: ["/staging-gate", "/api/"],
+        disallow: ["/staging-gate", "/review", "/api/"],
       },
     ],
     sitemap: `${siteConfig.url}/sitemap.xml`,

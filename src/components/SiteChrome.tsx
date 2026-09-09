@@ -22,6 +22,7 @@ export function SiteHeader() {
             width={48}
             height={48}
             className="brand-mark__logo"
+            sizes="48px"
             priority
           />
           <span className="brand-mark__text">
@@ -36,6 +37,16 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
+        <details className="site-nav-mobile">
+          <summary className="site-nav-mobile__toggle">Menu</summary>
+          <div className="site-nav-mobile__panel">
+            {nav.map((item) => (
+              <Link key={item.href} href={item.href} className="site-nav-mobile__link">
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        </details>
         <div className="header-actions">
           <StagingEditsLink />
           <a
@@ -63,6 +74,7 @@ export function SiteFooter() {
             width={56}
             height={56}
             className="site-footer__logo"
+            sizes="56px"
           />
           <div>
             <p className="font-display site-footer__name">{siteConfig.name}</p>

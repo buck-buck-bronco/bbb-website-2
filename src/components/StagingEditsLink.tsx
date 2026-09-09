@@ -2,23 +2,17 @@
 
 import Link from "next/link";
 import { useSyncExternalStore } from "react";
-import { isStagingHost } from "@/lib/staging";
+import { isReviewUiEnabled } from "@/lib/staging";
 
 function subscribeNoop() {
   return () => {};
 }
 
 function getShowEdits() {
-  const host = window.location.hostname;
-  const params = new URLSearchParams(window.location.search);
-  const forced =
-    params.get("review") === "1" ||
-    params.get("staging") === "1" ||
-    process.env.NEXT_PUBLIC_STAGING_LOCK === "1";
-  return forced || isStagingHost(host) || host === "localhost";
+  return isReviewUiEnabled(window.location.host);
 }
 
-/** Always-visible staging chrome so Melissa can open her feedback inbox. */
+/** Staging-only chrome so Melissa can open her feedback inbox. Hidden on the live site. */
 export function StagingEditsLink({
   className = "site-nav__edits",
   label = "Your edits",

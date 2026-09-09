@@ -25,12 +25,12 @@ Open [http://localhost:3000](http://localhost:3000).
 | `/bucked` | Printable “You’ve been bucked” tag maker |
 | `/play` | Redirects to `/#how` |
 | `/join` | Redirects to `/#community` |
-| `/review` | Staging edits inbox (comments, keep/hide, picture swaps) |
-| `/staging-gate` | Password gate for staging host |
+| `/review` | Staging-only edits inbox (not on the live domain) |
+| `/staging-gate` | Password gate for the staging host |
 
 ## Staging review
 
-See [STAGING.md](./STAGING.md). Staging password for Damien: **`SmileBucked13`** (`STAGING_PASSWORD`). Share `/?review=1` so the element picker opens after unlocking.
+See [STAGING.md](./STAGING.md). Set `STAGING_PASSWORD` on the staging host. The review dock is **off** on `buckbuckbronco.com`.
 
 ## GoDaddy DNS
 
@@ -42,8 +42,8 @@ Set `NEXT_PUBLIC_SITE_URL` for absolute canonicals and schema URLs.
 
 Staging env:
 
-- `STAGING_PASSWORD=SmileBucked13`
-- `STAGING_LOCK=1` (optional if host already matches staging)
+- `STAGING_PASSWORD` (required on the staging host)
+- `STAGING_LOCK=1` (optional if the host already matches staging)
 - Optional review sync: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 
 Not affiliated with Ford Motor Company.

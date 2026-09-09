@@ -21,9 +21,7 @@ export const siteConfig = {
   },
   images: {
     /** Horse mark only (no lettering, no square border) */
-    logo: "/brand/buck-buck-bronco-mark.png",
-    /** Original lockup kept for archival / printable reference */
-    logoLockup: "/brand/buck-buck-bronco-logo.png",
+    logo: "/brand/buck-buck-bronco-mark.webp",
     /** Full-bleed hero: orange Bronco on mountain road */
     hero: "/images/bronco-orange-trail.webp",
     /** Story / split: black Bronco at the cliffs */
@@ -34,10 +32,7 @@ export const siteConfig = {
     detail: "/images/bronco-detail-headlight.webp",
     /** Authenticity: chrome bucking-horse emblem on leather */
     authenticity: "/images/bucking-horse-emblem.webp",
-    authenticityJpg: "/images/bucking-horse-emblem.jpg",
-    /** Secondary landscape */
-    trail: "/images/bronco-trail.webp",
-    og: "/images/bronco-orange-trail.jpg",
+    og: "/images/og.jpg",
   },
   community: {
     facebook: "https://www.facebook.com/groups/buckbuckbronco/",

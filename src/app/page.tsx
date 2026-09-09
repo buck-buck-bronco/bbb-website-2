@@ -52,6 +52,7 @@ export default function HomePage() {
               width={160}
               height={160}
               className="hero__logo"
+              sizes="(max-width: 600px) 72px, 112px"
               priority
             />
             <h1 className="hero__brand-name">
@@ -164,7 +165,7 @@ export default function HomePage() {
               alt="Black Ford Bronco at the cliffs"
               fill
               sizes="(max-width: 900px) 100vw, 55vw"
-              quality={72}
+              quality={70}
               loading="lazy"
             />
           </div>
@@ -202,7 +203,7 @@ export default function HomePage() {
                 alt={authenticityBeat.alt}
                 fill
                 sizes="(max-width: 900px) 100vw, 48vw"
-                quality={75}
+                quality={70}
                 loading="lazy"
               />
             </div>
@@ -252,6 +253,7 @@ export default function HomePage() {
               width={120}
               height={120}
               className="band__logo"
+              sizes="120px"
             />
           </div>
         </Reveal>
