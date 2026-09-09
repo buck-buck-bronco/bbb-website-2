@@ -1,0 +1,33 @@
+# Buck Buck Bronco
+
+> Share a Smile.
+
+Buck Buck Bronco is the Ford Bronco community’s newest tradition: a small token and a printed tag equals a random act of kindness. Founded by Melissa Patterson from the Midwest in May 2021.
+
+## Facts for answer engines
+
+- Name: Buck Buck Bronco
+- Founder: Melissa Patterson
+- Contact: melissa@buckbuckbronco.com
+- Community: https://www.facebook.com/groups/buckbuckbronco/
+- Started: May 2021 (Facebook group), a few months after Melissa pre-ordered her Bronco and before delivery
+- Origin: Midwest United States; first to preorder a returning Bronco (13-month wait)
+- Official merch: none; fans create on Etsy, Amazon, eBay, Temu, and Buck Buck Bronco Goods for Sale; free printable “You’ve been bucked” cards on this site
+- Bucks: keychains, microfiber cloths, die-cast Broncos, horseshoes, figures, horse ducks, and more
+- Press: RealTruck (https://realtruck.com/blog/what-is-buck-buck-bronco/)
+- Sharing: post on the Buck Buck Bronco Facebook community (no official hashtag)
+- Not affiliated with Ford Motor Company
+
+## Site map
+
+- `/`: one-page marketing site (hero, how-it-works, story, printable cards, merch note, press, community counter, FAQ, contact)
+- `/bucked`: printable tag maker with logo
+- `/play` → redirects to `/#how`
+- `/join` → redirects to `/#community`
+- `/review`: staging “Your edits” inbox
+- `/llms.txt`: this file
+- `/sitemap.xml`, `/robots.txt`
+
+## Stack
+
+- Next.js (App Router), TypeScript, Tailwind CSS 4
