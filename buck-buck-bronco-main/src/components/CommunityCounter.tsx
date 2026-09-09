@@ -15,7 +15,7 @@ function subscribeMotion(onStoreChange: () => void) {
   return () => mq.removeEventListener("change", onStoreChange);
 }
 
-/** Hold, then count up, then crawl into the final number. */
+/** Fast at first, then crawls into the last digits. */
 function easeToFinish(t: number) {
   if (t <= 0) return 0;
   if (t >= 1) return 1;
@@ -23,7 +23,7 @@ function easeToFinish(t: number) {
 }
 
 export function CommunityCounter({ value, suffix = "+", label, since }: Props) {
-  const [animated, setAnimated] = useState(0);
+  const [animated, setAnimated] = useState(value);
   const [started, setStarted] = useState(false);
   const ref = useRef<HTMLDivElement | null>(null);
   const reduceMotion = useSyncExternalStore(
@@ -42,7 +42,7 @@ export function CommunityCounter({ value, suffix = "+", label, since }: Props) {
           obs.disconnect();
         }
       },
-      { threshold: 0.4 },
+      { threshold: 0.08, rootMargin: "0px 0px 18% 0px" },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -51,14 +51,14 @@ export function CommunityCounter({ value, suffix = "+", label, since }: Props) {
   useEffect(() => {
     if (!started || reduceMotion) return;
 
-    const delay = 450;
-    const duration = 2800;
+    const delay = 280;
+    const duration = 2400;
     let frame = 0;
     const timer = window.setTimeout(() => {
-      const start = performance.now();
+      const start = performance.now() - 80;
       const tick = (now: number) => {
         const t = Math.min(1, (now - start) / duration);
-        setAnimated(Math.round(value * easeToFinish(t)));
+        setAnimated(Math.max(1, Math.round(value * easeToFinish(t))));
         if (t < 1) {
           frame = requestAnimationFrame(tick);
         } else {
@@ -74,7 +74,7 @@ export function CommunityCounter({ value, suffix = "+", label, since }: Props) {
     };
   }, [started, value, reduceMotion]);
 
-  const display = reduceMotion || !started ? (reduceMotion ? value : animated) : animated;
+  const display = reduceMotion ? value : animated;
 
   return (
     <div
@@ -82,7 +82,7 @@ export function CommunityCounter({ value, suffix = "+", label, since }: Props) {
       className="counter"
       data-review-id="community-counter"
       data-review-label="Community counter"
-      aria-label={label}
+      aria-label={`${value.toLocaleString("en-US")}${suffix} ${label}`}
       role="group"
     >
       <p className="counter__kicker">{since}</p>

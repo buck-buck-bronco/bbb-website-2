@@ -336,7 +336,7 @@ export default function HomePage() {
 
       <section
         id="community"
-        className="section section--wide"
+        className="section section--community"
         data-review-id="home-community"
         data-review-label="Community / Facebook"
       >
