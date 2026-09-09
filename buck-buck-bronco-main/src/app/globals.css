@@ -156,7 +156,7 @@
     cursor: pointer;
     font-size: 0.82rem;
     font-weight: 700;
-    padding: 0.5rem 0.95rem;
+    padding: 0.55rem 1.1rem;
     border-radius: var(--radius-sm);
     border: 1px solid color-mix(in srgb, var(--snow) 28%, transparent);
     color: var(--snow);
@@ -246,6 +246,14 @@
 
   .header-cta {
     margin-left: 0;
+    flex-shrink: 0;
+    padding: 0.62rem 1.2rem;
+  }
+
+  @media (max-width: 420px) {
+    .header-cta__more {
+      display: none;
+    }
   }
 
   .btn-cta {
@@ -256,8 +264,15 @@
     color: var(--ink);
     font-weight: 700;
     font-size: 0.95rem;
+    padding: 0.95rem 1.65rem;
+    min-height: 3rem;
+    border: 0;
     border-radius: var(--radius-md);
     cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1.15;
+    letter-spacing: 0.01em;
     transition: transform 180ms ease, filter 180ms ease, background 160ms ease;
   }
 
@@ -267,7 +282,8 @@
   }
 
   .btn-cta--sm {
-    padding: 0.55rem 0.95rem;
+    padding: 0.62rem 1.2rem;
+    min-height: 2.45rem;
     font-size: 0.82rem;
     border-radius: var(--radius-md);
   }
@@ -280,10 +296,14 @@
     color: var(--snow);
     font-weight: 600;
     font-size: 0.95rem;
-    padding: 0.9rem 1.35rem;
+    padding: 0.95rem 1.65rem;
+    min-height: 3rem;
     border-radius: var(--radius-md);
     border: 1px solid color-mix(in srgb, var(--snow) 55%, transparent);
     cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1.15;
     transition: background 160ms ease, border-color 160ms ease;
   }
 
@@ -1005,6 +1025,12 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
+  }
+
+  .tag-maker__actions .btn-cta,
+  .tag-maker__actions .btn-ghost {
+    padding: 0.95rem 1.7rem;
+    min-width: 11.25rem;
   }
 
   .tag-maker__actions .btn-ghost {

@@ -11,7 +11,7 @@ import {
   howToSteps,
   storyBeats,
 } from "@/lib/content";
-import { siteConfig } from "@/lib/site";
+import { photoQuality, siteConfig } from "@/lib/site";
 
 export default function HomePage() {
   return (
@@ -35,8 +35,9 @@ export default function HomePage() {
             fill
             priority
             sizes="100vw"
-            quality={70}
-            placeholder="empty"
+            quality={photoQuality}
+            placeholder="blur"
+            blurDataURL={siteConfig.imageBlurs.hero}
           />
           <div className="hero__shade" />
         </div>
@@ -165,7 +166,9 @@ export default function HomePage() {
               alt="Black Ford Bronco at the cliffs"
               fill
               sizes="(max-width: 900px) 100vw, 55vw"
-              quality={70}
+              quality={photoQuality}
+              placeholder="blur"
+              blurDataURL={siteConfig.imageBlurs.story}
               loading="lazy"
             />
           </div>
@@ -203,7 +206,9 @@ export default function HomePage() {
                 alt={authenticityBeat.alt}
                 fill
                 sizes="(max-width: 900px) 100vw, 48vw"
-                quality={70}
+                quality={photoQuality}
+                placeholder="blur"
+                blurDataURL={siteConfig.imageBlurs.authenticity}
                 loading="lazy"
               />
             </div>
@@ -243,7 +248,9 @@ export default function HomePage() {
                 alt=""
                 fill
                 sizes="(max-width: 768px) 100vw, 40vw"
-                quality={70}
+                quality={photoQuality}
+                placeholder="blur"
+                blurDataURL={siteConfig.imageBlurs.emblem}
                 loading="lazy"
               />
             </div>
@@ -298,7 +305,9 @@ export default function HomePage() {
               alt="Ford Bronco headlight detail"
               fill
               sizes="(max-width: 900px) 100vw, 40vw"
-              quality={70}
+              quality={photoQuality}
+              placeholder="blur"
+              blurDataURL={siteConfig.imageBlurs.detail}
               loading="lazy"
             />
           </div>
