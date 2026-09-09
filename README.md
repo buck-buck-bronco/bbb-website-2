@@ -2,6 +2,8 @@
 
 Community site for the Ford Bronco kindness tradition: leave a Buck, share a smile, and keep the Facebook community growing. Founded by Melissa Patterson.
 
+The Next.js app lives in `buck-buck-bronco-main/` (Vercel Root Directory for the live `bbb-website` project).
+
 ## Stack
 
 - Next.js 16 (App Router)
@@ -11,7 +13,7 @@ Community site for the Ford Bronco kindness tradition: leave a Buck, share a smi
 ## Develop
 
 ```bash
-npm install
+npm install --prefix buck-buck-bronco-main
 npm run dev
 ```
 
@@ -30,20 +32,10 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Staging review
 
-See [STAGING.md](./STAGING.md). Set `STAGING_PASSWORD` on the staging host. The review dock is **off** on `buckbuckbronco.com`.
-
-## GoDaddy DNS
-
-See [GODADDY-DNS.md](./GODADDY-DNS.md) to point `buckbuckbronco.com` at Vercel.
+See [buck-buck-bronco-main/STAGING.md](./buck-buck-bronco-main/STAGING.md). Set `STAGING_PASSWORD` on the staging host. The review dock is **off** on `buckbuckbronco.com`.
 
 ## Deploy
 
-Set `NEXT_PUBLIC_SITE_URL` for absolute canonicals and schema URLs.
-
-Staging env:
-
-- `STAGING_PASSWORD` (required on the staging host)
-- `STAGING_LOCK=1` (optional if the host already matches staging)
-- Optional review sync: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+The connected Vercel project (`buck-buck-bronco/bbb-website`) uses Root Directory `buck-buck-bronco-main`. Set `NEXT_PUBLIC_SITE_URL=https://buckbuckbronco.com` on that project.
 
 Not affiliated with Ford Motor Company.
