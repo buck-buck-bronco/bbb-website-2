@@ -20,7 +20,12 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/staging-gate", "/review", "/api/"],
       },
       {
-        userAgent: "PerplexityBot",
+        userAgent: "Google-Extended",
+        allow: "/",
+        disallow: ["/staging-gate", "/review", "/api/"],
+      },
+      {
+        userAgent: "Applebot",
         allow: "/",
         disallow: ["/staging-gate", "/review", "/api/"],
       },

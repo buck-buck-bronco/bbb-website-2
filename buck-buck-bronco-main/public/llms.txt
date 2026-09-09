@@ -22,6 +22,7 @@ Buck Buck Bronco is the Ford Bronco community’s newest tradition: a small toke
 
 - `/`: one-page marketing site (hero, how-it-works, story, printable cards, merch note, press, community counter, FAQ, contact)
 - `/bucked`: printable tag maker with logo
+- `/privacy`: short privacy policy
 - `/play` → redirects to `/#how`
 - `/join` → redirects to `/#community`
 - `/review`: staging “Your edits” inbox

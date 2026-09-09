@@ -74,6 +74,7 @@ export const siteConfig = {
     "Melissa Patterson Bronco",
     "printable bucked tag",
     "Bronco trailside tradition",
+    "Midwest Bronco community",
   ],
 } as const;
 

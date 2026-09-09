@@ -85,6 +85,7 @@ export function SiteFooter() {
           </a>
           <StagingEditsLink className="site-footer__edits" label="Your edits" />
           <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
+          <Link href="/privacy">Privacy</Link>
         </div>
         <p className="site-footer__note">
           Not affiliated with Ford Motor Company. Play kind. Leave trails of smiles.
