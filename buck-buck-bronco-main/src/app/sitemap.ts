@@ -5,6 +5,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
     { path: "", priority: 1 },
     { path: "/bucked", priority: 0.9 },
+    { path: "/privacy", priority: 0.4 },
   ];
   return routes.map(({ path, priority }) => ({
     url: `${siteConfig.url}${path}`,

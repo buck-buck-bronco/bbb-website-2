@@ -5,12 +5,20 @@ import {
   getStagingPassword,
   isProductionHost,
   isReviewPath,
+  isStagingHost,
   stagingLockEnabled,
 } from "@/lib/staging";
 
 function isAuthed(req: NextRequest): boolean {
   const expected = getStagingPassword();
   return req.cookies.get(STAGING_COOKIE)?.value === expected;
+}
+
+function withStagingRobots(res: NextResponse, host: string) {
+  if (isStagingHost(host)) {
+    res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
+  return res;
 }
 
 export function middleware(req: NextRequest) {
@@ -30,7 +38,7 @@ export function middleware(req: NextRequest) {
   }
 
   if (!stagingLockEnabled(host)) {
-    return NextResponse.next();
+    return withStagingRobots(NextResponse.next(), host);
   }
 
   if (
@@ -45,17 +53,17 @@ export function middleware(req: NextRequest) {
     pathname === "/llms.txt" ||
     pathname === "/api/staging-auth"
   ) {
-    return NextResponse.next();
+    return withStagingRobots(NextResponse.next(), host);
   }
 
   if (isAuthed(req)) {
-    return NextResponse.next();
+    return withStagingRobots(NextResponse.next(), host);
   }
 
   const url = req.nextUrl.clone();
   url.pathname = STAGING_GATE_PATH;
   url.searchParams.set("next", pathname + req.nextUrl.search);
-  return NextResponse.redirect(url);
+  return withStagingRobots(NextResponse.redirect(url), host);
 }
 
 export const config = {

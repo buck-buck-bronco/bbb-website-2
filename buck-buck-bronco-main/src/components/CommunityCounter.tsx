@@ -15,6 +15,13 @@ function subscribeMotion(onStoreChange: () => void) {
   return () => mq.removeEventListener("change", onStoreChange);
 }
 
+/** Hold, then count up, then crawl into the final number. */
+function easeToFinish(t: number) {
+  if (t <= 0) return 0;
+  if (t >= 1) return 1;
+  return 1 - Math.pow(1 - t, 4);
+}
+
 export function CommunityCounter({ value, suffix = "+", label, since }: Props) {
   const [animated, setAnimated] = useState(0);
   const [started, setStarted] = useState(false);
@@ -35,7 +42,7 @@ export function CommunityCounter({ value, suffix = "+", label, since }: Props) {
           obs.disconnect();
         }
       },
-      { threshold: 0.35 },
+      { threshold: 0.4 },
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -43,20 +50,31 @@ export function CommunityCounter({ value, suffix = "+", label, since }: Props) {
 
   useEffect(() => {
     if (!started || reduceMotion) return;
-    const duration = 1600;
-    const start = performance.now();
+
+    const delay = 450;
+    const duration = 2800;
     let frame = 0;
-    const tick = (now: number) => {
-      const t = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - t, 3);
-      setAnimated(Math.round(value * eased));
-      if (t < 1) frame = requestAnimationFrame(tick);
+    const timer = window.setTimeout(() => {
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / duration);
+        setAnimated(Math.round(value * easeToFinish(t)));
+        if (t < 1) {
+          frame = requestAnimationFrame(tick);
+        } else {
+          setAnimated(value);
+        }
+      };
+      frame = requestAnimationFrame(tick);
+    }, delay);
+
+    return () => {
+      window.clearTimeout(timer);
+      cancelAnimationFrame(frame);
     };
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
   }, [started, value, reduceMotion]);
 
-  const display = reduceMotion ? value : animated;
+  const display = reduceMotion || !started ? (reduceMotion ? value : animated) : animated;
 
   return (
     <div

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { CommunityCounter } from "@/components/CommunityCounter";
+import { FaqList } from "@/components/FaqList";
 import { Reveal } from "@/components/Reveal";
 import {
   authenticityBeat,
@@ -242,25 +243,13 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="band__visual" aria-hidden>
-            <div className="band__photo">
-              <Image
-                src={siteConfig.images.emblem}
-                alt=""
-                fill
-                sizes="(max-width: 768px) 100vw, 40vw"
-                quality={photoQuality}
-                placeholder="blur"
-                blurDataURL={siteConfig.imageBlurs.emblem}
-                loading="lazy"
-              />
-            </div>
             <Image
               src={siteConfig.images.logo}
               alt=""
-              width={120}
-              height={120}
+              width={160}
+              height={160}
               className="band__logo"
-              sizes="120px"
+              sizes="160px"
             />
           </div>
         </Reveal>
@@ -388,14 +377,7 @@ export default function HomePage() {
           <p className="section__kicker">FAQ</p>
           <h2 className="section__title">Quick answers</h2>
         </Reveal>
-        <div className="faq">
-          {faqs.map((item) => (
-            <details key={item.q}>
-              <summary>{item.q}</summary>
-              <p>{item.a}</p>
-            </details>
-          ))}
-        </div>
+        <FaqList items={faqs} />
       </section>
 
       <section
