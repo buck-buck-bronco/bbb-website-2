@@ -55,7 +55,7 @@ export function SiteHeader() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Facebook group
+            Facebook<span className="header-cta__more">&nbsp;group</span>
           </a>
         </div>
       </div>

@@ -34,6 +34,21 @@ export const siteConfig = {
     authenticity: "/images/bucking-horse-emblem.webp",
     og: "/images/og.jpg",
   },
+  /**
+   * Tiny WebP data URLs so Next can paint a blur while the real photo loads.
+   * Photos are served as AVIF/WebP from cleaner sources (not double-crushed).
+   */
+  imageBlurs: {
+    hero: "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAACwBACdASoTABgAPtVWok2oJKMiN+gBABqJZwDIXDJptj48RermyBYro/CeJ7mYAP7r371rxvZZI/GE8HotymjM+arsuNjYGqxi6slfxYYJboAA",
+    story:
+      "data:image/webp;base64,UklGRlYAAABXRUJQVlA4IEoAAADQAwCdASoQABgAPu1krU6ppaSiMAgBMB2JZQCdACGCuelNTSlOB7AA/RG2rpuFd4VEHdMbBF31/aobSjwLkr/A000eZUIp94AAAA==",
+    emblem:
+      "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAADQAwCdASoQABgAPu1mqk4ppaOiMAgBMB2JQBdgAr6KJAOCLpatW1gArG5dnnjOQZgVAYAGeaw7GUEXNvWJ13FEBOVh1szQ0cQEMgIgAAA=",
+    detail:
+      "data:image/webp;base64,UklGRmIAAABXRUJQVlA4IFYAAAAQBACdASoQABgAPu1orU2ppqSiMAgBMB2JZwBTAAeh/nM54Tcera7ZYAD+5yjJIXRRt+sfipjWsYwHy2iHdEJ73LekCKixZa3JU7cmThA92s4FKfAAAA==",
+    authenticity:
+      "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAAAwBACdASoYABMAPu1qqU8ppiOiMBgIATAdiWUAuDAQ7/5hcZPTgwqHNgAA/hqCt7WzV+SbfjXmcJHJ+l4wq8PhcD5Ye9Scg9N+LLqn9oFFgAAA",
+  },
   community: {
     facebook: "https://www.facebook.com/groups/buckbuckbronco/",
     label: "Join the Facebook group",
@@ -61,3 +76,6 @@ export const siteConfig = {
     "Bronco trailside tradition",
   ],
 } as const;
+
+/** Next Image quality: sharp enough without double-crushing the WebP sources. */
+export const photoQuality = 80;
