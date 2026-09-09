@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 import {
   useCallback,
   useEffect,
-  useEffectEvent,
   useMemo,
   useState,
+  useSyncExternalStore,
   useTransition,
 } from "react";
 import {
@@ -89,11 +89,33 @@ function applyLiveOverlays(edits: ReviewEdit[], pagePath: string) {
   }
 }
 
+function subscribeNoop() {
+  return () => {};
+}
+
+function reviewQueryEnabled() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("review") === "1" || params.get("staging") === "1";
+}
+
 export function ReviewMode() {
   const pathname = usePathname();
-  const [enabled, setEnabled] = useState(false);
-  const [picking, setPicking] = useState(false);
-  const [author, setAuthor] = useState("");
+  const reviewFromUrl = useSyncExternalStore(
+    subscribeNoop,
+    reviewQueryEnabled,
+    () => false,
+  );
+  const savedAuthor = useSyncExternalStore(
+    subscribeNoop,
+    getSavedAuthor,
+    () => "",
+  );
+  const [enabledOverride, setEnabledOverride] = useState<boolean | null>(null);
+  const [pickingOverride, setPickingOverride] = useState<boolean | null>(null);
+  const [authorDraft, setAuthor] = useState<string | null>(null);
+  const enabled = enabledOverride ?? reviewFromUrl;
+  const picking = pickingOverride ?? reviewFromUrl;
+  const author = authorDraft ?? savedAuthor;
   const [selected, setSelected] = useState<TargetInfo | null>(null);
   const [comment, setComment] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -109,24 +131,20 @@ export function ReviewMode() {
     [edits],
   );
 
-  const refresh = useEffectEvent(async () => {
-    try {
-      const next = await fetchReviewEdits();
-      setEdits(next);
-      applyLiveOverlays(next, pathname);
-    } catch {
-      /* staging still usable offline for picking UI */
-    }
-  });
-
   useEffect(() => {
-    setAuthor(getSavedAuthor());
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("review") === "1" || params.get("staging") === "1") {
-      setEnabled(true);
-      setPicking(true);
-    }
-    void refresh();
+    let cancelled = false;
+    fetchReviewEdits()
+      .then((next) => {
+        if (cancelled) return;
+        setEdits(next);
+        applyLiveOverlays(next, pathname);
+      })
+      .catch(() => {
+        /* staging still usable offline for picking UI */
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [pathname]);
 
   useEffect(() => {
@@ -205,7 +223,13 @@ export function ReviewMode() {
                 : "Picture update saved.",
           );
           setSelected(null);
-          await refresh();
+          try {
+            const next = await fetchReviewEdits();
+            setEdits(next);
+            applyLiveOverlays(next, pathname);
+          } catch {
+            /* keep saved confirmation even if the inbox reload fails */
+          }
         } catch (err) {
           setError(err instanceof Error ? err.message : "Save failed");
         }
@@ -234,8 +258,8 @@ export function ReviewMode() {
           type="button"
           className={`review-dock__toggle ${enabled ? "is-on" : ""}`}
           onClick={() => {
-            setEnabled((v) => !v);
-            setPicking(true);
+            setEnabledOverride(!enabled);
+            setPickingOverride(true);
           }}
         >
           {enabled ? "Review on" : "Review off"}
@@ -244,7 +268,7 @@ export function ReviewMode() {
           <button
             type="button"
             className={`review-dock__btn ${picking ? "is-active" : ""}`}
-            onClick={() => setPicking((v) => !v)}
+            onClick={() => setPickingOverride(!picking)}
           >
             {picking ? "Picking…" : "Pick element"}
           </button>
