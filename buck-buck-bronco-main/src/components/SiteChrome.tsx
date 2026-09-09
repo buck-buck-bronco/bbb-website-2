@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { MobileNav } from "@/components/MobileNav";
 import { StagingEditsLink } from "@/components/StagingEditsLink";
 import { siteConfig } from "@/lib/site";
 
@@ -37,16 +38,7 @@ export function SiteHeader() {
             </Link>
           ))}
         </nav>
-        <details className="site-nav-mobile">
-          <summary className="site-nav-mobile__toggle">Menu</summary>
-          <div className="site-nav-mobile__panel">
-            {nav.map((item) => (
-              <Link key={item.href} href={item.href} className="site-nav-mobile__link">
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        </details>
+        <MobileNav items={nav} />
         <div className="header-actions">
           <StagingEditsLink />
           <a

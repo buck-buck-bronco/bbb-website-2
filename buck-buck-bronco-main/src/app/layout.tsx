@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Source_Sans_3 } from "next/font/google";
 import { ReviewGate } from "@/components/ReviewGate";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
@@ -17,6 +17,13 @@ const display = Bebas_Neue({
   subsets: ["latin"],
   weight: "400",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#050505",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
