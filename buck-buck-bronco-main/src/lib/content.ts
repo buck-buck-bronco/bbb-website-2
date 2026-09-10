@@ -82,6 +82,5 @@ export const findBucks = {
   intro:
     "You can find Bucks by searching Buck Buck Bronco on Etsy, Amazon, eBay, and Temu. Check out our Facebook page,",
   goodsLabel: "Buck Buck Bronco Goods for Sale",
-  /** Exact Goods for Sale URL was not in the review note; using the main community group until Melissa confirms. */
-  goodsUrl: "https://www.facebook.com/groups/buckbuckbronco/",
+  goodsUrl: "https://www.facebook.com/share/g/1GzQYvpz75/?mibextid=wwXIfr",
 } as const;
