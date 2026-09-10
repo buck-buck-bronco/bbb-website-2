@@ -1,0 +1,10 @@
+{
+  "name": "Buck Buck Bronco",
+  "install": "npm ci --prefix buck-buck-bronco-main",
+  "terminals": [
+    {
+      "name": "next-dev",
+      "command": "npm --prefix buck-buck-bronco-main run dev"
+    }
+  ]
+}
