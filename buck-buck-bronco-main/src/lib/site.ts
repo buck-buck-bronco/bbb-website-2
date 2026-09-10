@@ -54,8 +54,7 @@ export const siteConfig = {
     label: "Join the Facebook group",
     goodsForSale: {
       label: "Buck Buck Bronco Goods for Sale",
-      /** Confirm exact page URL with Melissa; interim link points at the main group. */
-      url: "https://www.facebook.com/groups/buckbuckbronco/",
+      url: "https://www.facebook.com/share/g/1GzQYvpz75/?mibextid=wwXIfr",
     },
   },
   counter: {
