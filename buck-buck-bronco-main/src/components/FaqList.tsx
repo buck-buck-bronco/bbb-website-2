@@ -10,8 +10,13 @@ export function FaqList({ items }: { items: readonly FaqItem[] }) {
   return (
     <>
       <div className="faq">
-        {items.map((item) => (
-          <details key={item.q} className="faq__item">
+        {items.map((item, index) => (
+          <details
+            key={item.q}
+            className="faq__item"
+            data-review-id={`faq-${index + 1}`}
+            data-review-label={`FAQ: ${item.q}`}
+          >
             <summary className="faq__q">
               <span>{item.q}</span>
             </summary>

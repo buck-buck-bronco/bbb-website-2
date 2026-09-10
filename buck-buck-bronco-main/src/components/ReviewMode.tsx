@@ -18,6 +18,7 @@ import {
   saveAuthor,
 } from "@/lib/review/client";
 import type { ReviewEdit } from "@/lib/review/types";
+import { isStagingHost } from "@/lib/staging";
 
 type TargetInfo = {
   id: string;
@@ -98,11 +99,20 @@ function reviewQueryEnabled() {
   return params.get("review") === "1" || params.get("staging") === "1";
 }
 
+function stagingHostEnabled() {
+  return isStagingHost(window.location.host);
+}
+
 export function ReviewMode() {
   const pathname = usePathname();
   const reviewFromUrl = useSyncExternalStore(
     subscribeNoop,
     reviewQueryEnabled,
+    () => false,
+  );
+  const onStagingHost = useSyncExternalStore(
+    subscribeNoop,
+    stagingHostEnabled,
     () => false,
   );
   const savedAuthor = useSyncExternalStore(
@@ -113,8 +123,9 @@ export function ReviewMode() {
   const [enabledOverride, setEnabledOverride] = useState<boolean | null>(null);
   const [pickingOverride, setPickingOverride] = useState<boolean | null>(null);
   const [authorDraft, setAuthor] = useState<string | null>(null);
-  const enabled = enabledOverride ?? reviewFromUrl;
-  const picking = pickingOverride ?? reviewFromUrl;
+  const reviewReady = reviewFromUrl || onStagingHost;
+  const enabled = enabledOverride ?? reviewReady;
+  const picking = pickingOverride ?? reviewReady;
   const author = authorDraft ?? savedAuthor;
   const [selected, setSelected] = useState<TargetInfo | null>(null);
   const [comment, setComment] = useState("");
@@ -217,7 +228,7 @@ export function ReviewMode() {
           });
           setMessage(
             kind === "comment"
-              ? "Comment saved. Open Your edits anytime to see everything you submitted."
+              ? "Comment saved. Open See all reviews anytime to see everything you submitted."
               : kind === "toggle"
                 ? "Preference saved."
                 : "Picture update saved.",
@@ -253,34 +264,39 @@ export function ReviewMode() {
 
   return (
     <>
-      <div className="review-dock" role="region" aria-label="Staging review tools">
-        <button
-          type="button"
-          className={`review-dock__toggle ${enabled ? "is-on" : ""}`}
-          onClick={() => {
-            setEnabledOverride(!enabled);
-            setPickingOverride(true);
-          }}
-        >
-          {enabled ? "Review on" : "Review off"}
-        </button>
-        {enabled ? (
+      <div className="review-bubble" role="region" aria-label="Staging review tools">
+        <p className="review-bubble__label">Leave a note</p>
+        <div className="review-bubble__actions">
           <button
             type="button"
-            className={`review-dock__btn ${picking ? "is-active" : ""}`}
-            onClick={() => setPickingOverride(!picking)}
+            className={`review-bubble__pick ${enabled && picking ? "is-active" : ""}`}
+            onClick={() => {
+              const next = !(enabled && picking);
+              setEnabledOverride(next);
+              setPickingOverride(next);
+            }}
           >
-            {picking ? "Picking…" : "Pick element"}
+            {enabled && picking ? "Picking…" : "Pick something"}
           </button>
-        ) : null}
-        <Link href="/review" className="review-dock__link review-dock__link--edits">
-          Your edits{openCount ? ` (${openCount})` : ""}
-        </Link>
+          <Link href="/review" className="review-bubble__reviews">
+            See all reviews{openCount ? ` (${openCount})` : ""}
+          </Link>
+        </div>
+        <button
+          type="button"
+          className={`review-bubble__power ${enabled ? "is-on" : ""}`}
+          onClick={() => {
+            setEnabledOverride(!enabled);
+            setPickingOverride(!enabled);
+          }}
+        >
+          {enabled ? "Tools on" : "Tools off"}
+        </button>
       </div>
 
       {enabled && picking ? (
         <p className="review-hint">
-          Click a highlighted block to comment, turn it on/off, or change its picture.
+          Click a highlighted block to comment, keep or hide it, or change its picture.
         </p>
       ) : null}
 

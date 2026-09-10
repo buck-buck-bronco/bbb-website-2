@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { StagingEditsLink } from "@/components/StagingEditsLink";
 
 type NavItem = {
   href: string;
@@ -21,6 +22,7 @@ export function MobileNav({ items }: { items: readonly NavItem[] }) {
               {item.label}
             </Link>
           ))}
+          <StagingEditsLink className="site-nav-mobile__link" label="See all reviews" />
         </div>
       </details>
       <script dangerouslySetInnerHTML={{ __html: closeScript }} />
