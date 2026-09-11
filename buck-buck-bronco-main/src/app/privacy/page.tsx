@@ -22,7 +22,11 @@ export default function PrivacyPage() {
         <h1>Privacy policy</h1>
         <p>A short, plain explanation of what this site does with information.</p>
       </header>
-      <section className="section privacy">
+      <section
+        className="section privacy"
+        data-review-id="privacy-body"
+        data-review-label="Privacy policy text"
+      >
         <p>
           Buck Buck Bronco is a community tradition run by {siteConfig.founder.name}.
           This website is a public brochure and a free printable tag maker. You do
