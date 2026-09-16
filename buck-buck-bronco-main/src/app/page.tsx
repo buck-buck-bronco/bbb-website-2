@@ -130,8 +130,25 @@ export default function HomePage() {
                   >
                     {findBucks.goodsLabel}
                   </a>
-                  .
+                  . {findBucks.outro}
                 </p>
+              ) : null}
+              {step.n === "04" ? (
+                <a
+                  className="step__qr"
+                  href={siteConfig.community.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="/brand/facebook-group-qr.svg"
+                    alt="QR code for the Buck Buck Bronco Facebook group"
+                    width={112}
+                    height={112}
+                  />
+                  <span>Scan to open the Facebook group</span>
+                </a>
               ) : null}
             </Reveal>
           ))}
@@ -233,7 +250,7 @@ export default function HomePage() {
         <Reveal className="band">
           <div className="band__copy">
             <p className="section__kicker">Printable cards</p>
-            <h2 className="section__title">You’ve been bucked</h2>
+            <h2 className="section__title">You’ve been Bucked</h2>
             <p className="section__lede">
               Free printable cards with the Buck Buck Bronco logo. Add a note,
               download a PNG, and tuck one with your next horse.
@@ -276,7 +293,7 @@ export default function HomePage() {
               >
                 {siteConfig.community.goodsForSale.label}
               </a>
-              . What we do offer: free printable “You’ve been bucked” cards so
+              . What we do offer: free printable “You’ve been Bucked” cards so
               anyone can join the fun.
             </p>
             <Link href="/bucked" className="btn-ghost btn-ghost--dark">

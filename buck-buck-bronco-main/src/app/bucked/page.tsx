@@ -19,7 +19,7 @@ export default function BuckedPage() {
         <Reveal>
           <h1>Make a tag</h1>
           <p>
-            Customize a “You’ve been bucked” tag, download it, print a stack,
+            Customize a “You’ve been Bucked” tag, download it, print a stack,
             and tuck one with your next horse.
           </p>
         </Reveal>

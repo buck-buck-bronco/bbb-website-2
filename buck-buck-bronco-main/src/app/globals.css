@@ -651,6 +651,38 @@
     margin-top: 0.75rem;
   }
 
+  .step__qr {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.45rem;
+    margin-top: 0.9rem;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  .step__qr img {
+    width: 7rem;
+    height: 7rem;
+    background: var(--snow);
+    border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    border-radius: 0.45rem;
+    padding: 0.35rem;
+  }
+
+  .step__qr span {
+    font-size: 0.82rem;
+    line-height: 1.35;
+    color: var(--steel);
+    max-width: 16ch;
+  }
+
+  .step__qr:hover span,
+  .step__qr:focus-visible span {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+
   .how-note {
     margin: 0 0 2rem;
     padding: 1.15rem 1.35rem;
