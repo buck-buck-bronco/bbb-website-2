@@ -2,7 +2,11 @@
 <script>
 (async function(){
   const base = "https://cdn.jsdelivr.net/gh/buck-buck-bronco/bbb-website-2@main/el-cafecito-scroll/";
-  const parts = await Promise.all([0,1,2].map(i => fetch(base+"part"+i+".txt").then(r=>{if(!r.ok)throw r.status;return r.text();})));
-  document.open(); document.write(parts.join("")); document.close();
-})().catch(e=>{document.body.textContent="Load error: "+e;});
+  const n = 6;
+  const parts = await Promise.all([...Array(n).keys()].map(i =>
+    fetch(base+"p"+i+".b64?t="+Date.now()).then(r=>{if(!r.ok)throw r.status;return r.text();})
+  ));
+  const html = parts.map(b => atob(b.replace(/\s/g,""))).join("");
+  document.open(); document.write(html); document.close();
+})().catch(e=>{document.body.textContent="Load error: "+e; console.error(e);});
 </script></head><body style="background:#1E0E06;color:#F5EFE6;font-family:system-ui;padding:2rem">Loading…</body></html>
