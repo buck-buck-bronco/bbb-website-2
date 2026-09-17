@@ -1,6 +1,11 @@
 import { faqs, howToSteps } from "../content";
 import { siteConfig } from "../site";
 
+function absoluteUrl(path: string) {
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  return `${siteConfig.url}${path}`;
+}
+
 export function buildGraph() {
   const org = {
     "@type": "Organization",
@@ -18,8 +23,8 @@ export function buildGraph() {
       "@type": "Country",
       name: "United States",
     },
-    logo: `${siteConfig.url}${siteConfig.images.logo}`,
-    image: `${siteConfig.url}${siteConfig.images.hero}`,
+    logo: absoluteUrl(siteConfig.images.logo),
+    image: absoluteUrl(siteConfig.images.hero),
     sameAs: [siteConfig.community.facebook],
     founder: { "@id": `${siteConfig.url}/#founder` },
     knowsAbout: [
@@ -64,7 +69,7 @@ export function buildGraph() {
     isPartOf: { "@id": `${siteConfig.url}/#website` },
     about: { "@id": `${siteConfig.url}/#org` },
     inLanguage: "en-US",
-    primaryImageOfPage: `${siteConfig.url}${siteConfig.images.og}`,
+    primaryImageOfPage: absoluteUrl(siteConfig.images.og),
   };
 
   const howTo = {

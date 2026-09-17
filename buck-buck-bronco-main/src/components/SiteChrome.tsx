@@ -14,7 +14,11 @@ const nav = [
 
 export function SiteHeader() {
   return (
-    <header className="site-header">
+    <header
+      className="site-header"
+      data-review-id="site-header"
+      data-review-label="Top menu and logo"
+    >
       <div className="site-header__inner">
         <Link href="/" className="brand-mark" aria-label={`${siteConfig.name} home`}>
           <Image
@@ -40,7 +44,7 @@ export function SiteHeader() {
         </nav>
         <MobileNav items={nav} />
         <div className="header-actions">
-          <StagingEditsLink />
+          <StagingEditsLink label="Reviews" />
           <a
             href={siteConfig.community.facebook}
             className="btn-cta btn-cta--sm header-cta"
@@ -57,7 +61,11 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="site-footer">
+    <footer
+      className="site-footer"
+      data-review-id="site-footer"
+      data-review-label="Footer links"
+    >
       <div className="site-footer__inner">
         <div className="site-footer__brand-row">
           <Image
@@ -83,7 +91,7 @@ export function SiteFooter() {
           >
             Facebook group
           </a>
-          <StagingEditsLink className="site-footer__edits" label="Your edits" />
+          <StagingEditsLink className="site-footer__edits" label="See all reviews" />
           <a href={`mailto:${siteConfig.email}`}>{siteConfig.email}</a>
           <Link href="/privacy">Privacy</Link>
         </div>

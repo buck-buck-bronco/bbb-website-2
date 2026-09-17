@@ -15,7 +15,7 @@ function getShowEdits() {
 /** Staging-only chrome so Melissa can open her feedback inbox. Hidden on the live site. */
 export function StagingEditsLink({
   className = "site-nav__edits",
-  label = "Your edits",
+  label = "See all reviews",
 }: {
   className?: string;
   label?: string;
