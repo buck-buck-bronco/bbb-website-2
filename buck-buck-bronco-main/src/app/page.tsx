@@ -133,6 +133,25 @@ export default function HomePage() {
                   .
                 </p>
               ) : null}
+              {step.n === "04" ? (
+                <a
+                  className="step__qr"
+                  href={siteConfig.community.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Image
+                    src="/brand/fb-group-qr.png"
+                    alt="QR code linking to the Buck Buck Bronco Facebook group"
+                    width={132}
+                    height={132}
+                    className="step__qr-img"
+                  />
+                  <span className="step__qr-caption">
+                    Scan to join the Facebook group
+                  </span>
+                </a>
+              ) : null}
             </Reveal>
           ))}
         </div>
@@ -233,7 +252,7 @@ export default function HomePage() {
         <Reveal className="band">
           <div className="band__copy">
             <p className="section__kicker">Printable cards</p>
-            <h2 className="section__title">You’ve been bucked</h2>
+            <h2 className="section__title">You’ve been Bucked</h2>
             <p className="section__lede">
               Free printable cards with the Buck Buck Bronco logo. Add a note,
               download a PNG, and tuck one with your next horse.
@@ -276,7 +295,7 @@ export default function HomePage() {
               >
                 {siteConfig.community.goodsForSale.label}
               </a>
-              . What we do offer: free printable “You’ve been bucked” cards so
+              . What we do offer: free printable “You’ve been Bucked” cards so
               anyone can join the fun.
             </p>
             <Link href="/bucked" className="btn-ghost btn-ghost--dark">
@@ -345,8 +364,8 @@ export default function HomePage() {
             <p className="section__kicker">Community</p>
             <h2 className="section__title">Growing from the Midwest</h2>
             <p className="section__lede">
-              The Buck Buck Bronco Facebook group is where buckers share photos,
-              find their buckee, and keep the tradition rolling, since May
+              The Buck Buck Bronco Facebook group is where Buckers share photos,
+              find their Buckee, and keep the tradition rolling, since May
               2021.
             </p>
             <a
