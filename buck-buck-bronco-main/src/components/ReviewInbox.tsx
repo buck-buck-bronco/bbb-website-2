@@ -70,9 +70,9 @@ export function ReviewInbox() {
           live staging site.
         </p>
         <p className="review-inbox__hint">
-          Tip: open any page with <code>?review=1</code> to turn the picker on,
-          then use <strong>Your edits</strong> in the header or bottom dock to
-          come back here.
+          Tip: the bottom-right bubble lets you pick something on any page. Use{" "}
+          <strong>See all reviews</strong> there, in the header, or here to come
+          back to this list.
         </p>
         <div className="review-inbox__toolbar">
           <button
@@ -92,7 +92,7 @@ export function ReviewInbox() {
           <button type="button" className="review-dock__btn" onClick={load} disabled={pending}>
             Refresh
           </button>
-          <Link href="/?review=1" className="btn-cta btn-cta--sm">
+          <Link href="/" className="btn-cta btn-cta--sm">
             Back to site picker
           </Link>
         </div>
@@ -102,7 +102,8 @@ export function ReviewInbox() {
 
       {visible.length === 0 ? (
         <p className="review-inbox__empty">
-          No edits yet. Open any page, turn Review on, and click a highlighted block.
+          No edits yet. Open any page, tap <strong>Pick something</strong> in the
+          bubble, and click a highlighted block.
         </p>
       ) : (
         <ul className="review-inbox__list">
