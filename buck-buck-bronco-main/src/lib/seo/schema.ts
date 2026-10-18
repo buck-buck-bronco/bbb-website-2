@@ -25,7 +25,7 @@ export function buildGraph() {
     knowsAbout: [
       "Buck Buck Bronco",
       "Ford Bronco community",
-      "You've been bucked",
+      "You've been Bucked",
       "Share a Smile",
     ],
   };

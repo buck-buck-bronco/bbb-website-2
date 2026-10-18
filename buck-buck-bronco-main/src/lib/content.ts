@@ -42,7 +42,7 @@ export const faqs = [
   },
   {
     q: "Do you sell official merch?",
-    a: "No official merchandise line. Fans get creative on Etsy, Amazon, eBay, Temu, and the Buck Buck Bronco Goods for Sale Facebook page. We offer free printable “You’ve been Bucked” cards with the logo so anyone can join in.",
+    a: "No official merchandise line. Fans get creative on Etsy, Amazon, eBay, Temu, and our sister page, Buck Buck Bronco Goods for Sale. We offer free printable “You’ve been Bucked” cards with the logo so anyone can join in.",
   },
   {
     q: "Where do I get Bucks?",
@@ -62,7 +62,7 @@ export const storyBeats = {
   eyebrow: "The story",
   title: "A Midwest spark that went nationwide",
   lead:
-    "Melissa Patterson pre-ordered a returning Bronco the moment she could. Shortly after that, Buck Buck Bronco was born, so Bronco owners would have their own way to share a smile.",
+    "Melissa Patterson pre-ordered a returning Bronco the moment she could. Shortly after that, Buck Buck Bronco was born, giving Bronco owners their own way to share a smile.",
   body: [
     "She talked it through with Allison Parliament, who started Duck Duck Jeep. Allison was all for it. With that encouragement, Melissa launched the Buck Buck Bronco Facebook group in May 2021, months before her own Bronco finally arrived after she waited for over a year.",
     "What began in the Midwest is now a nationwide way of spreading joy: leave a small token, add a printed tag if you like, and brighten another Bronco owner’s day.",
@@ -80,7 +80,7 @@ export const authenticityBeat = {
 
 export const findBucks = {
   intro:
-    "You can find Bucks by searching Buck Buck Bronco on Etsy, Amazon, eBay, and Temu. Check out our sister page,",
+    "You can find Bucks by searching Buck Buck Bronco on Etsy, Amazon, eBay, and Temu. That’s not our only Facebook page — check out our sister page,",
   goodsLabel: "Buck Buck Bronco Goods for Sale",
   goodsUrl: "https://www.facebook.com/share/g/1GzQYvpz75/?mibextid=wwXIfr",
   outro:

@@ -362,8 +362,8 @@ export default function HomePage() {
             <p className="section__kicker">Community</p>
             <h2 className="section__title">Growing from the Midwest</h2>
             <p className="section__lede">
-              The Buck Buck Bronco Facebook group is where buckers share photos,
-              find their buckee, and keep the tradition rolling, since May
+              The Buck Buck Bronco Facebook group is where Buckers share photos,
+              find their Buckee, and keep the tradition rolling, since May
               2021.
             </p>
             <a
