@@ -37,14 +37,12 @@ export function Reveal({
     const rect = el.getBoundingClientRect();
     const alreadyVisible =
       rect.top < window.innerHeight * 0.92 && rect.bottom > 0;
-    if (alreadyVisible) {
-      setInView(true);
-      if (once) return;
-    }
-
-    if (typeof IntersectionObserver === "undefined") {
-      setInView(true);
-      return;
+    let frame = 0;
+    if (alreadyVisible || typeof IntersectionObserver === "undefined") {
+      frame = requestAnimationFrame(() => setInView(true));
+      if (once || typeof IntersectionObserver === "undefined") {
+        return () => cancelAnimationFrame(frame);
+      }
     }
 
     const observer = new IntersectionObserver(
@@ -60,7 +58,10 @@ export function Reveal({
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
   }, [once]);
 
   const delayClass = delay > 0 ? `reveal-delay-${delay}` : "";

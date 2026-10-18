@@ -1,8 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, Source_Sans_3 } from "next/font/google";
+import Script from "next/script";
+import { JsonLd } from "@/components/JsonLd";
 import { ReviewGate } from "@/components/ReviewGate";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
-import { buildGraph } from "@/lib/seo/schema";
+import { buildSiteGraph } from "@/lib/seo/schema";
 import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
@@ -50,7 +52,7 @@ export const metadata: Metadata = {
         url: siteConfig.images.og,
         width: 1200,
         height: 630,
-        alt: "Ford Bronco on the trail: Buck Buck Bronco",
+        alt: "Orange Ford Bronco on a mountain road, Buck Buck Bronco",
       },
     ],
   },
@@ -85,15 +87,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const graph = buildGraph();
-
   return (
     <html lang="en" className={`${body.variable} ${display.variable} h-full`}>
       <body className="flex min-h-full flex-col antialiased">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(graph) }}
-        />
+        <Script id="mark-js" strategy="beforeInteractive">
+          {`document.documentElement.classList.add("js")`}
+        </Script>
+        <JsonLd data={buildSiteGraph()} />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />

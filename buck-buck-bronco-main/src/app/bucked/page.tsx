@@ -1,16 +1,24 @@
 import type { Metadata } from "next";
 import { BuckTagMaker } from "@/components/BuckTagMaker";
+import { JsonLd } from "@/components/JsonLd";
 import { Reveal } from "@/components/Reveal";
+import { pageMetadata } from "@/lib/seo/metadata";
+import { buildPageGraph } from "@/lib/seo/schema";
 
-export const metadata: Metadata = {
-  title: "Make a tag",
-  description:
-    "Create a printable You've Been Bucked tag for Buck Buck Bronco. Add your name, note, and download a PNG.",
-};
+const title = "Print a You’ve been Bucked tag";
+const description =
+  "Create a free printable You’ve been Bucked tag. Add your name and a note, download a PNG, and leave it with a Buck on another Ford Bronco.";
+
+export const metadata: Metadata = pageMetadata({
+  title,
+  description,
+  path: "/bucked",
+});
 
 export default function BuckedPage() {
   return (
     <>
+      <JsonLd data={buildPageGraph({ name: title, description, path: "/bucked" })} />
       <header
         className="page-hero"
         data-review-id="bucked-hero"

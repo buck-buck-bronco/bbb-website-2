@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { CommunityCounter } from "@/components/CommunityCounter";
 import { FaqList } from "@/components/FaqList";
+import { JsonLd } from "@/components/JsonLd";
 import { Reveal } from "@/components/Reveal";
 import {
   authenticityBeat,
@@ -12,11 +14,20 @@ import {
   howToSteps,
   storyBeats,
 } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo/metadata";
+import { buildHomeGraph } from "@/lib/seo/schema";
 import { photoQuality, siteConfig } from "@/lib/site";
+
+export const metadata: Metadata = pageMetadata({
+  title: { absolute: `${siteConfig.name} | ${siteConfig.tagline}` },
+  description: siteConfig.description,
+  path: "/",
+});
 
 export default function HomePage() {
   return (
     <>
+      <JsonLd data={buildHomeGraph()} />
       <section
         className="hero"
         aria-label="Buck Buck Bronco hero"
@@ -25,14 +36,13 @@ export default function HomePage() {
       >
         <div
           className="hero__media"
-          aria-hidden
           data-review-id="home-hero-image"
           data-review-label="Hero background photo"
           data-review-kind="image"
         >
           <Image
             src={siteConfig.images.hero}
-            alt=""
+            alt="Orange Ford Bronco on a mountain road"
             fill
             priority
             sizes="100vw"
@@ -75,8 +85,7 @@ export default function HomePage() {
             data-review-id="home-support"
             data-review-label="Hero supporting sentence"
           >
-            The Bronco Community’s newest tradition: a small token and a
-            printed tag equals a random act of kindness.
+            {siteConfig.definition}
           </p>
           <div
             className="hero__actions"
@@ -146,6 +155,9 @@ export default function HomePage() {
                     alt="QR code for the Buck Buck Bronco Facebook group"
                     width={112}
                     height={112}
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
                   />
                   <span>Scan to open the Facebook group</span>
                 </a>
@@ -363,8 +375,7 @@ export default function HomePage() {
             <h2 className="section__title">Growing from the Midwest</h2>
             <p className="section__lede">
               The Buck Buck Bronco Facebook group is where Buckers share photos,
-              find their Buckee, and keep the tradition rolling, since May
-              2021.
+              find their Buckee, and keep the tradition rolling, since May{"\u00A0"}2021.
             </p>
             <a
               href={siteConfig.community.facebook}

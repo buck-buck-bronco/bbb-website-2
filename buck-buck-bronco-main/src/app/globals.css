@@ -384,10 +384,10 @@
 
   @media (max-width: 1366px), (pointer: coarse) {
     .text-link {
-      display: inline-flex;
-      align-items: center;
-      min-height: var(--tap);
-      padding-inline: 0.1rem;
+      display: inline;
+      min-height: 0;
+      padding: 0;
+      line-height: inherit;
     }
   }
 
@@ -412,8 +412,8 @@
     height: 100%;
     max-width: none;
     object-fit: cover;
-    transform: scale(1.04);
-    animation: hero-drift 18s ease-in-out infinite alternate;
+    /* Transform only. Opacity stays 1 so this LCP image is paintable immediately. */
+    animation: hero-settle 1200ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
   .hero__shade {
@@ -439,7 +439,7 @@
     align-items: center;
     gap: 1rem;
     margin: 0 0 1.1rem;
-    animation: hero-rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: hero-rise 1200ms 160ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
 
   .hero__logo {
@@ -473,7 +473,7 @@
     line-height: 1.25;
     margin: 0 0 0.75rem;
     color: var(--trail);
-    animation: hero-rise 700ms 80ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: hero-rise 1200ms 320ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
 
   .hero__support {
@@ -482,14 +482,14 @@
     font-size: 1.05rem;
     line-height: 1.55;
     margin: 0 0 1.75rem;
-    animation: hero-rise 700ms 140ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: hero-rise 1200ms 480ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
 
   .hero__actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    animation: hero-rise 700ms 200ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: hero-rise 1200ms 640ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
   }
 
   .section {
@@ -601,8 +601,9 @@
 
   .steps {
     display: grid;
-    gap: 1.5rem;
-    margin-bottom: 3rem;
+    gap: 1.15rem;
+    margin-bottom: 2rem;
+    align-items: stretch;
   }
 
   @media (min-width: 768px) {
@@ -614,13 +615,16 @@
 
   @media (min-width: 1100px) {
     .steps {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1.25rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
     }
   }
 
   .step {
-    padding: 1.2rem 1.15rem 1.35rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.05rem 1.05rem 1.15rem;
     border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
     border-radius: var(--radius-md);
     background: color-mix(in srgb, var(--snow) 78%, transparent);
@@ -662,8 +666,8 @@
   }
 
   .step__qr img {
-    width: 7rem;
-    height: 7rem;
+    width: 5.75rem;
+    height: 5.75rem;
     background: var(--snow);
     border: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
     border-radius: 0.45rem;
@@ -730,6 +734,10 @@
     .split__media {
       min-height: 220px;
       border-radius: var(--radius-lg);
+    }
+
+    .split__media img {
+      object-position: center 82%;
     }
 
     .split__copy {
@@ -1285,7 +1293,24 @@
     display: grid;
     gap: 0.85rem;
     max-width: 42rem;
-    padding-top: 0;
+    padding-top: 2.5rem;
+  }
+
+  .privacy__header h1 {
+    font-family: var(--font-display), sans-serif;
+    font-size: clamp(2.6rem, 7vw, 4.2rem);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 0.92;
+    margin: 0 0 0.75rem;
+  }
+
+  .privacy__header p:last-child {
+    max-width: none;
+    color: var(--steel);
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin: 0 0 0.35rem;
   }
 
   .privacy h2 {
@@ -1371,51 +1396,56 @@
     font-size: 0.9rem;
   }
 
+  /* Visible without JS. The js class opts into the scroll reveal. */
   .reveal-scroll {
-    opacity: 0;
-    transform: translate3d(0, 16px, 0);
-    transition:
-      opacity 500ms ease,
-      transform 500ms ease;
+    opacity: 1;
+    transform: none;
   }
 
-  .reveal-scroll.is-inview {
+  html.js .reveal-scroll {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+    transition:
+      opacity 1100ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 1100ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html.js .reveal-scroll.is-inview {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    will-change: auto;
   }
 
   .reveal-delay-1 {
-    transition-delay: 60ms;
+    transition-delay: 160ms;
   }
   .reveal-delay-2 {
-    transition-delay: 120ms;
+    transition-delay: 320ms;
   }
   .reveal-delay-3 {
-    transition-delay: 180ms;
+    transition-delay: 480ms;
   }
   .reveal-delay-4 {
-    transition-delay: 240ms;
+    transition-delay: 640ms;
+  }
+}
+
+@keyframes hero-settle {
+  from {
+    transform: scale(1.03);
+  }
+  to {
+    transform: scale(1);
   }
 }
 
 @keyframes hero-rise {
   from {
     opacity: 0;
-    transform: translateY(22px);
+    transform: translate3d(0, 12px, 0);
   }
   to {
     opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes hero-drift {
-  from {
-    transform: scale(1.04) translate3d(0, 0, 0);
-  }
-  to {
-    transform: scale(1.08) translate3d(-1.2%, -0.8%, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -1436,6 +1466,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .hero__media img,
   .hero__brand-lockup,
   .hero__headline,
@@ -1447,20 +1481,16 @@
     transition: none !important;
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
   }
 }
 
-/* Phones and tablets: never hide a section, and don't animate full-bleed photos while scrolling. */
+/* Phones and tablets: keep sections visible. The hero photo only plays its one-shot settle. */
 @media (max-width: 1366px) {
   .reveal-scroll {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
-  }
-
-  .hero__media img {
-    transform: none;
-    animation: none;
   }
 }
 
@@ -1752,11 +1782,6 @@ body.review-picking [data-review-id] {
 
 /* Phones: keep hero CTAs on-screen, stack on the smallest widths, room for thumbs. */
 @media (max-width: 479px) {
-  .hero__media img {
-    transform: none;
-    animation: none;
-  }
-
   .site-header__inner {
     gap: 0.5rem;
     padding-left: max(0.85rem, env(safe-area-inset-left));

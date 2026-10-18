@@ -1,8 +1,12 @@
+const definition =
+  "Buck Buck Bronco is the Ford Bronco community’s newest tradition: a small token and a printed tag equals a random act of kindness.";
+
 export const siteConfig = {
   name: "Buck Buck Bronco",
   tagline: "Share a Smile.",
-  description:
-    "Buck Buck Bronco is the Ford Bronco community’s newest tradition: a small token and a printed tag equals a random act of kindness. Founded by Melissa Patterson from the Midwest.",
+  /** One quotable sentence for the hero and answer engines. */
+  definition,
+  description: `${definition} Founded by Melissa Patterson from the Midwest.`,
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://buckbuckbronco.com",
   email: "melissa@buckbuckbronco.com",
   foundedYear: 2021,
@@ -61,7 +65,7 @@ export const siteConfig = {
     label: "members on the Facebook page",
     value: 32900,
     suffix: "+",
-    since: "And growing from the Midwest since May 2021",
+    since: "And growing from the Midwest since May\u00A02021",
   },
   keywords: [
     "Buck Buck Bronco",

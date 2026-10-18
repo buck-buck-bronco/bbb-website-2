@@ -1,11 +1,15 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo/metadata";
 import { GateClient } from "./GateClient";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Staging gate",
-  robots: { index: false, follow: false },
-};
+  description:
+    "Password gate for the private Buck Buck Bronco staging site. This page is not part of the public site.",
+  path: "/staging-gate",
+  index: false,
+});
 
 export default function StagingGatePage() {
   return (

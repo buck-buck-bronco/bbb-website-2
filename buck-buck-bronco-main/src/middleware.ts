@@ -3,6 +3,7 @@ import {
   STAGING_COOKIE,
   STAGING_GATE_PATH,
   getStagingPassword,
+  hostnameOf,
   isProductionHost,
   isReviewPath,
   isStagingHost,
@@ -24,6 +25,14 @@ function withStagingRobots(res: NextResponse, host: string) {
 export function middleware(req: NextRequest) {
   const host = req.headers.get("host") ?? "";
   const { pathname } = req.nextUrl;
+
+  if (hostnameOf(host) === "www.buckbuckbronco.com") {
+    const url = req.nextUrl.clone();
+    url.hostname = "buckbuckbronco.com";
+    url.protocol = "https:";
+    url.port = "";
+    return NextResponse.redirect(url, 308);
+  }
 
   if (isProductionHost(host)) {
     if (isReviewPath(pathname)) {
