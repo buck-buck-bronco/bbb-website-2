@@ -1,35 +1,26 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/lib/site";
 
+const publicPaths = {
+  allow: "/",
+  disallow: ["/staging-gate", "/review", "/api/"],
+};
+
+const allowedAgents = [
+  "*",
+  "GPTBot",
+  "ClaudeBot",
+  "PerplexityBot",
+  "Google-Extended",
+  "Applebot",
+];
+
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [
-      {
-        userAgent: "*",
-        allow: "/",
-        disallow: ["/staging-gate", "/review", "/api/"],
-      },
-      {
-        userAgent: "GPTBot",
-        allow: "/",
-        disallow: ["/staging-gate", "/review", "/api/"],
-      },
-      {
-        userAgent: "ClaudeBot",
-        allow: "/",
-        disallow: ["/staging-gate", "/review", "/api/"],
-      },
-      {
-        userAgent: "Google-Extended",
-        allow: "/",
-        disallow: ["/staging-gate", "/review", "/api/"],
-      },
-      {
-        userAgent: "Applebot",
-        allow: "/",
-        disallow: ["/staging-gate", "/review", "/api/"],
-      },
-    ],
+    rules: allowedAgents.map((userAgent) => ({
+      userAgent,
+      ...publicPaths,
+    })),
     sitemap: `${siteConfig.url}/sitemap.xml`,
   };
 }

@@ -24,7 +24,6 @@ export function SiteHeader() {
             height={48}
             className="brand-mark__logo"
             sizes="48px"
-            priority
           />
           <span className="brand-mark__text">
             <span className="brand-mark__word">Buck Buck</span>

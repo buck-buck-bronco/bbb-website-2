@@ -1,28 +1,29 @@
 import type { Metadata } from "next";
+import { JsonLd } from "@/components/JsonLd";
+import { pageMetadata } from "@/lib/seo/metadata";
+import { buildPageGraph } from "@/lib/seo/schema";
 import { siteConfig } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Privacy policy",
-  description:
-    "How Buck Buck Bronco handles information: we do not sell personal data, and this site does not require an account.",
-  alternates: {
-    canonical: `${siteConfig.url}/privacy`,
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+const title = "Privacy policy";
+const description =
+  "How Buck Buck Bronco handles information: no account is required, personal data is not sold, and tags you make stay in your browser.";
+
+export const metadata: Metadata = pageMetadata({
+  title,
+  description,
+  path: "/privacy",
+});
 
 export default function PrivacyPage() {
   return (
     <>
-      <header className="page-hero">
-        <p className="section__kicker">Privacy</p>
-        <h1>Privacy policy</h1>
-        <p>A short, plain explanation of what this site does with information.</p>
-      </header>
+      <JsonLd data={buildPageGraph({ name: title, description, path: "/privacy" })} />
       <section className="section privacy">
+        <header className="privacy__header">
+          <p className="section__kicker">Privacy</p>
+          <h1>Privacy policy</h1>
+          <p>A short, plain explanation of what this site does with information.</p>
+        </header>
         <p>
           Buck Buck Bronco is a community tradition run by {siteConfig.founder.name}.
           This website is a public brochure and a free printable tag maker. You do

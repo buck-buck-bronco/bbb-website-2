@@ -37,44 +37,42 @@ export function BuckTagMaker() {
     ctx.clearRect(0, 0, w, h);
 
     ctx.fillStyle = "#050505";
-    roundRect(ctx, 24, 24, w - 48, h - 48, 12);
+    roundRect(ctx, 24, 24, w - 48, h - 48, 16);
     ctx.fill();
 
     ctx.fillStyle = "#f5c518";
-    ctx.fillRect(24, 24, w - 48, 14);
+    ctx.fillRect(24, 24, w - 48, 16);
 
     if (logo) {
-      const size = 88;
-      const x = 56;
-      const y = 88;
-      ctx.drawImage(logo, x, y, size, size);
+      const size = 128;
+      ctx.drawImage(logo, 56, 72, size, size);
     }
 
-    const textX = logo ? 160 : 56;
+    const textX = logo ? 208 : 56;
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "400 40px 'Bebas Neue', Impact, sans-serif";
-    ctx.fillText("YOU'VE BEEN BUCKED", textX, 118);
+    ctx.font = "400 78px 'Bebas Neue', Impact, sans-serif";
+    ctx.fillText("YOU'VE BEEN BUCKED", textX, 140);
 
     ctx.fillStyle = "#f5c518";
-    ctx.font = "400 26px 'Bebas Neue', Impact, sans-serif";
-    ctx.fillText("BUCK BUCK BRONCO", textX, 156);
+    ctx.font = "400 46px 'Bebas Neue', Impact, sans-serif";
+    ctx.fillText("BUCK BUCK BRONCO", textX, 196);
 
     ctx.fillStyle = "#d7dde3";
-    ctx.font = "400 22px 'Source Sans 3', system-ui, sans-serif";
-    wrapText(ctx, fields.note || DEFAULT.note, 56, 230, w - 112, 32);
+    ctx.font = "400 42px 'Source Sans 3', system-ui, sans-serif";
+    wrapText(ctx, fields.note || DEFAULT.note, 56, 280, w - 112, 54, h - 180);
 
     ctx.fillStyle = "#ffffff";
-    ctx.font = "600 20px 'Source Sans 3', system-ui, sans-serif";
+    ctx.font = "600 38px 'Source Sans 3', system-ui, sans-serif";
     ctx.fillText(
       fields.from ? `From ${fields.from}` : "From a fellow Bronco driver",
       56,
-      h - 90,
+      h - 118,
     );
 
     ctx.fillStyle = "#8b96a1";
-    ctx.font = "500 16px 'Source Sans 3', system-ui, sans-serif";
-    ctx.fillText("Share a Smile · buckbuckbronco.com", 56, h - 56);
+    ctx.font = "500 36px 'Source Sans 3', system-ui, sans-serif";
+    ctx.fillText("Share a Smile · buckbuckbronco.com", 56, h - 68);
   }, [fields, logo]);
 
   function download() {
@@ -143,7 +141,7 @@ export function BuckTagMaker() {
         <canvas
           ref={canvasRef}
           width={900}
-          height={520}
+          height={720}
           aria-label="Preview of your You've Been Bucked tag"
         />
       </div>
@@ -175,6 +173,7 @@ function wrapText(
   y: number,
   maxWidth: number,
   lineHeight: number,
+  maxY: number,
 ) {
   const words = text.split(" ");
   let line = "";
@@ -182,6 +181,7 @@ function wrapText(
   for (const word of words) {
     const test = line ? `${line} ${word}` : word;
     if (ctx.measureText(test).width > maxWidth && line) {
+      if (yy > maxY) return;
       ctx.fillText(line, x, yy);
       line = word;
       yy += lineHeight;
@@ -189,5 +189,5 @@ function wrapText(
       line = test;
     }
   }
-  if (line) ctx.fillText(line, x, yy);
+  if (line && yy <= maxY) ctx.fillText(line, x, yy);
 }
