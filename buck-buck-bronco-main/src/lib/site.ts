@@ -16,7 +16,7 @@ export const siteConfig = {
       outlet: "RealTruck",
       url: "https://realtruck.com/blog/what-is-buck-buck-bronco/",
       blurb:
-        "RealTruck went inside the trailside tradition: how a Midwest Bronco owner sparked a nationwide smile.",
+        "RealTruck went inside the kindness tradition: how a Midwest Bronco owner sparked a nationwide smile.",
     },
   },
   images: {
@@ -72,7 +72,7 @@ export const siteConfig = {
     "Share a Smile",
     "Melissa Patterson Bronco",
     "printable bucked tag",
-    "Bronco trailside tradition",
+    "Bronco spreading joy",
     "Midwest Bronco community",
   ],
 } as const;
