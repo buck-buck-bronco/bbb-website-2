@@ -1,11 +1,25 @@
-/** Publishable Supabase project for staging review sync (anon key is public by design). */
-export const reviewSupabase = {
-  url:
-    process.env.NEXT_PUBLIC_SUPABASE_URL ??
-    "https://pwhzlwhbyssnuwrjsand.supabase.co",
-  anonKey:
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB3aHpsd2hieXNzbnV3cmpzYW5kIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0MzU5MjIsImV4cCI6MjEwMzAxMTkyMn0.gY2smjXXoLbSJkIxY46Vdm7Uxvm7i29zMTiptGnwubE",
-} as const;
+/**
+ * Review storage stays off unless this exact opt-in is "1".
+ * Older REVIEW_SUPABASE_URL / REVIEW_SUPABASE_ANON_KEY values, if still
+ * present on a host, do not turn storage back on by themselves.
+ */
+export function reviewStorageExplicitlyEnabled(): boolean {
+  return process.env.REVIEW_STORAGE_ENABLED === "1";
+}
+
+export function reviewBackend(): { url: string; anonKey: string } | null {
+  if (!reviewStorageExplicitlyEnabled()) return null;
+  const rawUrl = process.env.REVIEW_SUPABASE_URL?.trim() ?? "";
+  const anonKey = process.env.REVIEW_SUPABASE_ANON_KEY?.trim() ?? "";
+  if (!rawUrl || !anonKey) return null;
+  try {
+    const parsed = new URL(rawUrl);
+    if (parsed.protocol !== "https:" || parsed.username || parsed.password) return null;
+    if (!parsed.hostname) return null;
+    return { url: parsed.origin, anonKey };
+  } catch {
+    return null;
+  }
+}
 
 export const REVIEW_TABLE = "bbb_review_edits";

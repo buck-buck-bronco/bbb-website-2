@@ -4,11 +4,12 @@ import { FormEvent, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { siteConfig } from "@/lib/site";
+import { safeNextPath } from "@/lib/staging";
 
 export function GateClient() {
   const router = useRouter();
   const params = useSearchParams();
-  const next = params.get("next") || "/";
+  const next = safeNextPath(params.get("next"));
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
@@ -23,11 +24,11 @@ export function GateClient() {
         body: JSON.stringify({ password, next }),
       });
       if (!res.ok) {
-        setError("Incorrect password. Check STAGING.md.");
+        setError("That password was not accepted.");
         return;
       }
       const data = (await res.json()) as { next?: string };
-      router.replace(data.next || (next.startsWith("/") ? next : "/"));
+      router.replace(safeNextPath(data.next));
       router.refresh();
     });
   }
@@ -45,8 +46,7 @@ export function GateClient() {
         />
         <h1 className="gate__title">Staging preview</h1>
         <p className="gate__lede">
-          Password-protected review build for {siteConfig.name}. Damien has the
-          password in STAGING.md.
+          Password-protected review build for {siteConfig.name}.
         </p>
         <form className="gate__form" onSubmit={onSubmit}>
           <label className="field">

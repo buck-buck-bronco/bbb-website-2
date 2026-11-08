@@ -1,0 +1,10 @@
+{
+  "appliesToProject": "buck-buck-bronco-staging",
+  "doNotApplyTo": "customer production project bbb-website or buckbuckbronco.com",
+  "nodeVersion": "24.x",
+  "installCommand": "npm ci --ignore-scripts --no-audit --no-fund",
+  "buildCommand": "npm run build",
+  "framework": "nextjs",
+  "allowedLifecycleScripts": "none",
+  "note": "Not read by Vercel automatically. Set these on the staging project only after Knox vets this exact head. Do not change the customer production project."
+}

@@ -4,22 +4,22 @@ Share this with your reviewer so she can pick elements, leave comments, toggle k
 
 The review dock and **Your edits** links are **staging / localhost / preview only**. They never render on `buckbuckbronco.com`.
 
-## Staging password (Damien)
+## Staging lock
 
-**Password:** `SmileBucked13`
+The password is not stored in this repo. On the staging host, and on generated previews, the gate stays shut until both of these environment variables are set:
 
-Set on the staging Vercel project as:
+- `STAGING_PASSWORD`
+- `STAGING_SESSION_SECRET` (at least 16 characters; signs the session cookie)
 
-```bash
-STAGING_PASSWORD=SmileBucked13
-STAGING_LOCK=1
-```
+The gate also locks every `*.vercel.app` hostname and any deployment with `VERCEL_ENV=preview`. `buckbuckbronco.com` stays open. `STAGING_LOCK=1` also locks any other non-production host, including local.
 
-- Gate activates when `STAGING_LOCK=1` **or** the host looks like the staging app (`buck-buck-bronco-staging.vercel.app`).
-- Cookie name: `bbb_staging_auth` (httpOnly, 14 days).
+Set `STAGING_LOCK=1` for the staging `next build`, on both the stable and preview build environments. That build serves original image files and does not use `/_next/image`. Start from a fresh build cache. Do not reuse `.next` or a build cache produced without `STAGING_LOCK=1`. The customer site build leaves `STAGING_LOCK` unset, so its images stay optimized.
+
+- Cookie name: `bbb_staging_auth` (HttpOnly, Secure, SameSite=Lax, 14 days). The value is a signed session, not the password. Secure is always set.
 - Gate page: `/staging-gate`
+- Review storage stays off unless `REVIEW_STORAGE_ENABLED` is exactly `1`. Older `REVIEW_SUPABASE_URL` or `REVIEW_SUPABASE_ANON_KEY` values do not turn it back on. There is no built-in database fallback.
 
-Locally, add the same vars to `.env.local` if you want to test the lock.
+Do not commit the values.
 
 ## Share links (live)
 
@@ -35,7 +35,7 @@ Stable staging host: `https://buck-buck-bronco-staging.vercel.app`
 
 ## How she uses it
 
-1. Open the staging link and enter the password from Damien.
+1. Open the staging link and enter the staging password.
 2. Confirm the bottom-right dock shows **Review on** / **Picking…**, plus a highlighted **Your edits** button.
 3. Click any dashed outline (hero, copy, photos, sections).
 4. Enter her name once.
