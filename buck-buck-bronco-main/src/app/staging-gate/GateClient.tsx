@@ -6,7 +6,7 @@ import Image from "next/image";
 import { siteConfig } from "@/lib/site";
 import { safeNextPath } from "@/lib/staging";
 
-export function GateClient() {
+export function GateClient({ unoptimized = false }: { unoptimized?: boolean }) {
   const router = useRouter();
   const params = useSearchParams();
   const next = safeNextPath(params.get("next"));
@@ -43,6 +43,7 @@ export function GateClient() {
           height={200}
           className="gate__logo"
           priority
+          unoptimized={unoptimized}
         />
         <h1 className="gate__title">Staging preview</h1>
         <p className="gate__lede">

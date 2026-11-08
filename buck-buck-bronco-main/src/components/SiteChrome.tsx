@@ -1,6 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { MobileNav } from "@/components/MobileNav";
+import { SiteImage } from "@/components/SiteImage";
 import { StagingEditsLink } from "@/components/StagingEditsLink";
 import { siteConfig } from "@/lib/site";
 
@@ -17,7 +17,7 @@ export function SiteHeader() {
     <header className="site-header">
       <div className="site-header__inner">
         <Link href="/" className="brand-mark" aria-label={`${siteConfig.name} home`}>
-          <Image
+          <SiteImage
             src={siteConfig.images.logo}
             alt=""
             width={48}
@@ -59,7 +59,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <div className="site-footer__inner">
         <div className="site-footer__brand-row">
-          <Image
+          <SiteImage
             src={siteConfig.images.logo}
             alt=""
             width={56}
