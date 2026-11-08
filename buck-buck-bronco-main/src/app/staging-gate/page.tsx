@@ -1,8 +1,6 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { pageMetadata } from "@/lib/seo/metadata";
-import { stagingLockEnabled } from "@/lib/staging";
 import { GateClient } from "./GateClient";
 
 export const metadata: Metadata = pageMetadata({
@@ -13,9 +11,7 @@ export const metadata: Metadata = pageMetadata({
   index: false,
 });
 
-export default async function StagingGatePage() {
-  const host = (await headers()).get("host") ?? "";
-  const unoptimized = stagingLockEnabled(host);
+export default function StagingGatePage() {
   return (
     <Suspense
       fallback={
@@ -24,7 +20,7 @@ export default async function StagingGatePage() {
         </div>
       }
     >
-      <GateClient unoptimized={unoptimized} />
+      <GateClient />
     </Suspense>
   );
 }

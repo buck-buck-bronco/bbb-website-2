@@ -1,15 +1,24 @@
+"use client";
+
 import Image, { type ImageProps } from "next/image";
-import { headers } from "next/headers";
-import { stagingLockEnabled } from "@/lib/staging";
+import { useEffect, useState } from "react";
 
 /**
- * The image optimizer loads a local file by calling back into this server
- * with an empty header set, so it does not send the staging session cookie.
- * While the lock is on, that callback is redirected and the photo fails.
- * Unoptimized delivery lets the browser request the same path with the cookie.
- * Customer hosts stay on the optimizer. Image paths are not added to the gate allowlist.
+ * The optimizer fetches a local image with empty headers, so the staging
+ * gate redirects that callback. A non-secret lock cookie, set only while
+ * the gate is on, tells the browser to request the original path instead.
+ * That request carries the session cookie. Customer hosts never get the
+ * cookie, so they keep the optimizer. Image paths stay behind the gate.
  */
-export async function SiteImage(props: ImageProps) {
-  const host = (await headers()).get("host") ?? "";
-  return <Image {...props} unoptimized={stagingLockEnabled(host)} />;
+const LOCK_COOKIE = "bbb_staging_lock=1";
+
+export function SiteImage({ alt = "", ...props }: ImageProps) {
+  const [direct, setDirect] = useState(false);
+
+  useEffect(() => {
+    const locked = document.cookie.split("; ").includes(LOCK_COOKIE);
+    setDirect(locked);
+  }, []);
+
+  return <Image {...props} alt={alt} unoptimized={direct} />;
 }

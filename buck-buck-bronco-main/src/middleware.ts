@@ -19,6 +19,15 @@ function withRobots(res: NextResponse, host: string) {
     res.headers.set("X-Robots-Tag", "noindex, nofollow");
     res.headers.set("Cache-Control", "private, no-store");
   }
+  if (stagingLockEnabled(host)) {
+    res.cookies.set("bbb_staging_lock", "1", {
+      httpOnly: false,
+      secure: true,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 14,
+    });
+  }
   return res;
 }
 

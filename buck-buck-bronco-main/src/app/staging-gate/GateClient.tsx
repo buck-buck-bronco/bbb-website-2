@@ -2,11 +2,11 @@
 
 import { FormEvent, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Image from "next/image";
+import { SiteImage } from "@/components/SiteImage";
 import { siteConfig } from "@/lib/site";
 import { safeNextPath } from "@/lib/staging";
 
-export function GateClient({ unoptimized = false }: { unoptimized?: boolean }) {
+export function GateClient() {
   const router = useRouter();
   const params = useSearchParams();
   const next = safeNextPath(params.get("next"));
@@ -36,14 +36,13 @@ export function GateClient({ unoptimized = false }: { unoptimized?: boolean }) {
   return (
     <div className="gate">
       <div className="gate__panel">
-        <Image
+        <SiteImage
           src={siteConfig.images.logo}
           alt={siteConfig.name}
           width={200}
           height={200}
           className="gate__logo"
           priority
-          unoptimized={unoptimized}
         />
         <h1 className="gate__title">Staging preview</h1>
         <p className="gate__lede">
