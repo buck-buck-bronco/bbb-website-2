@@ -1,9 +1,6 @@
 export const STAGING_COOKIE = "bbb_staging_auth";
 export const STAGING_GATE_PATH = "/staging-gate";
 
-/** Fallback only when env is missing; also documented in STAGING.md */
-const STAGING_PASSWORD_FALLBACK = "SmileBucked13";
-
 const PRODUCTION_HOSTS = new Set([
   "buckbuckbronco.com",
   "www.buckbuckbronco.com",
@@ -23,6 +20,47 @@ export function isStagingHost(host: string) {
     bare.includes("buck-buck-bronco-staging") ||
     bare.startsWith("staging.")
   );
+}
+
+/** Vercel preview deployments. The customer production domain is never included. */
+export function isPreviewDeployment() {
+  return process.env.VERCEL_ENV === "preview";
+}
+
+export function shouldNoindex(host: string) {
+  if (isProductionHost(host)) return false;
+  return isStagingHost(host) || isPreviewDeployment();
+}
+
+/**
+ * Same-origin path only. Rejects protocol-relative and backslash targets.
+ * Returns "/" when the value is not a safe in-app path.
+ */
+export function safeNextPath(value: unknown): string {
+  if (typeof value !== "string" || value.length === 0 || value.length > 300) {
+    return "/";
+  }
+  if (!value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) {
+    return "/";
+  }
+  if (value.includes("\\") || value.includes("://") || value.includes("\0")) {
+    return "/";
+  }
+  let decoded = value;
+  try {
+    decoded = decodeURIComponent(value);
+  } catch {
+    return "/";
+  }
+  if (
+    !decoded.startsWith("/") ||
+    decoded.startsWith("//") ||
+    decoded.includes("\\") ||
+    decoded.includes("://")
+  ) {
+    return "/";
+  }
+  return value;
 }
 
 /** Staging host always. Local/preview only with ?review=1. Never on the public domain. */
@@ -48,11 +86,6 @@ export function stagingLockEnabled(host: string) {
   // Never password-gate the live custom domain, even if STAGING_LOCK=1
   // is set on the interim Damien project used for emergency attach.
   if (isProductionHost(host)) return false;
-  if (process.env.STAGING_LOCK === "1") return true;
-  return isStagingHost(host);
-}
-
-/** Server-only. Prefer STAGING_PASSWORD env; fallback keeps staging usable. */
-export function getStagingPassword(): string {
-  return process.env.STAGING_PASSWORD || STAGING_PASSWORD_FALLBACK;
+  if (isStagingHost(host) || isPreviewDeployment()) return true;
+  return process.env.STAGING_LOCK === "1";
 }

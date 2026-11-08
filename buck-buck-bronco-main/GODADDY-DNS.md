@@ -7,7 +7,7 @@ Domain is registered at **GoDaddy**. Point it at the Vercel project so `https://
 - Team: **D's projects** (`d-s-projects-prim`)
 - Project: **buck-buck-bronco-staging** (git-linked to `drich-22/buck-buck-bronco`)
 - Staging URL (password gate): https://buck-buck-bronco-staging.vercel.app  
-  Password: `SmileBucked13`
+  The password is the `STAGING_PASSWORD` environment value. It is not stored in this repo.
 - **Add domains here (required click):**  
   https://vercel.com/d-s-projects-prim/buck-buck-bronco-staging/settings/domains
 

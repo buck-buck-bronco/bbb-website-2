@@ -2,27 +2,22 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   STAGING_COOKIE,
   STAGING_GATE_PATH,
-  getStagingPassword,
   hostnameOf,
   isProductionHost,
   isReviewPath,
-  isStagingHost,
+  shouldNoindex,
   stagingLockEnabled,
 } from "@/lib/staging";
+import { stagingSessionValid } from "@/lib/staging-session";
 
-function isAuthed(req: NextRequest): boolean {
-  const expected = getStagingPassword();
-  return req.cookies.get(STAGING_COOKIE)?.value === expected;
-}
-
-function withStagingRobots(res: NextResponse, host: string) {
-  if (isStagingHost(host)) {
+function withRobots(res: NextResponse, host: string) {
+  if (shouldNoindex(host)) {
     res.headers.set("X-Robots-Tag", "noindex, nofollow");
   }
   return res;
 }
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const host = req.headers.get("host") ?? "";
   const { pathname } = req.nextUrl;
 
@@ -47,7 +42,7 @@ export function middleware(req: NextRequest) {
   }
 
   if (!stagingLockEnabled(host)) {
-    return withStagingRobots(NextResponse.next(), host);
+    return withRobots(NextResponse.next(), host);
   }
 
   if (
@@ -62,17 +57,18 @@ export function middleware(req: NextRequest) {
     pathname === "/llms.txt" ||
     pathname === "/api/staging-auth"
   ) {
-    return withStagingRobots(NextResponse.next(), host);
+    return withRobots(NextResponse.next(), host);
   }
 
-  if (isAuthed(req)) {
-    return withStagingRobots(NextResponse.next(), host);
+  const cookie = req.cookies.get(STAGING_COOKIE)?.value;
+  if (await stagingSessionValid(cookie)) {
+    return withRobots(NextResponse.next(), host);
   }
 
   const url = req.nextUrl.clone();
   url.pathname = STAGING_GATE_PATH;
   url.searchParams.set("next", pathname + req.nextUrl.search);
-  return withStagingRobots(NextResponse.redirect(url), host);
+  return withRobots(NextResponse.redirect(url), host);
 }
 
 export const config = {
