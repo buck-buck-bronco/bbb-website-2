@@ -1,7 +1,7 @@
 "use client";
 
 import Image, { type ImageProps } from "next/image";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 /**
  * The optimizer fetches a local image with empty headers, so the staging
@@ -12,13 +12,15 @@ import { useEffect, useState } from "react";
  */
 const LOCK_COOKIE = "bbb_staging_lock=1";
 
+function subscribe() {
+  return () => {};
+}
+
+function lockedInBrowser() {
+  return document.cookie.split("; ").includes(LOCK_COOKIE);
+}
+
 export function SiteImage({ alt = "", ...props }: ImageProps) {
-  const [direct, setDirect] = useState(false);
-
-  useEffect(() => {
-    const locked = document.cookie.split("; ").includes(LOCK_COOKIE);
-    setDirect(locked);
-  }, []);
-
+  const direct = useSyncExternalStore(subscribe, lockedInBrowser, () => false);
   return <Image {...props} alt={alt} unoptimized={direct} />;
 }
