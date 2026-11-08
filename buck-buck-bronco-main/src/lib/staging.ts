@@ -27,9 +27,14 @@ export function isPreviewDeployment() {
   return process.env.VERCEL_ENV === "preview";
 }
 
+/** Any Vercel-generated hostname, including preview and deployment URLs. */
+export function isGeneratedDeploymentHost(host: string) {
+  return hostnameOf(host).endsWith(".vercel.app");
+}
+
 export function shouldNoindex(host: string) {
   if (isProductionHost(host)) return false;
-  return isStagingHost(host) || isPreviewDeployment();
+  return isStagingHost(host) || isPreviewDeployment() || isGeneratedDeploymentHost(host);
 }
 
 /**
@@ -86,6 +91,6 @@ export function stagingLockEnabled(host: string) {
   // Never password-gate the live custom domain, even if STAGING_LOCK=1
   // is set on the interim Damien project used for emergency attach.
   if (isProductionHost(host)) return false;
-  if (isStagingHost(host) || isPreviewDeployment()) return true;
+  if (isStagingHost(host) || isPreviewDeployment() || isGeneratedDeploymentHost(host)) return true;
   return process.env.STAGING_LOCK === "1";
 }

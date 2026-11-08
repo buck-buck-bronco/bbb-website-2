@@ -8,6 +8,8 @@ import {
   stagingSessionMaxAge,
 } from "@/lib/staging-session";
 
+export const runtime = "nodejs";
+
 const MAX_BODY = 4_000;
 
 function unauthorized() {

@@ -11,7 +11,7 @@ The password is not stored in this repo. On the staging host, and on generated p
 - `STAGING_PASSWORD`
 - `STAGING_SESSION_SECRET` (at least 16 characters; signs the session cookie)
 
-`STAGING_LOCK=1` also locks any other non-production host, including local.
+The gate also locks every `*.vercel.app` hostname and any deployment with `VERCEL_ENV=preview`. `buckbuckbronco.com` stays open. `STAGING_LOCK=1` also locks any other non-production host, including local.
 
 - Cookie name: `bbb_staging_auth` (httpOnly, 14 days). The value is a signed session, not the password.
 - Gate page: `/staging-gate`

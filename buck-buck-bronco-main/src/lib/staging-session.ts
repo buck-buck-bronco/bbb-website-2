@@ -80,11 +80,10 @@ export async function stagingSessionValid(token: string | undefined): Promise<bo
   const parts = token.split(".");
   if (parts.length !== 3 || parts[0] !== "v1" || !/^\d{1,12}$/.test(parts[1])) return false;
   const payload = `${parts[0]}.${parts[1]}`;
-  const provided = base64UrlToBytes(parts[2]);
+  const provided = base64UrlToBytes(parts[2]) ?? new Uint8Array();
   const expected = await hmac(secret, payload);
-  if (!provided || provided.length !== expected.length) return false;
-  let diff = 0;
-  for (let i = 0; i < expected.length; i += 1) diff |= expected[i] ^ provided[i];
+  let diff = provided.length === expected.length ? 0 : 1;
+  for (let i = 0; i < expected.length; i += 1) diff |= expected[i] ^ (provided[i] ?? 0);
   if (diff !== 0) return false;
   const exp = Number(parts[1]);
   const now = Math.floor(Date.now() / 1000);
