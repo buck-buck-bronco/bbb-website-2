@@ -1,6 +1,9 @@
 import assert from "node:assert/strict";
 import { bodyRejectionStatus, readBoundedBody } from "../src/lib/read-bounded-body.mjs";
 
+const nobody = new Request("http://127.0.0.1/api/staging-auth", { method: "POST" });
+assert.deepEqual(await readBoundedBody(nobody, 4), { ok: true, text: "" });
+
 const small = new Request("http://127.0.0.1/api/staging-auth", {
   method: "POST",
   headers: { "content-length": "2" },

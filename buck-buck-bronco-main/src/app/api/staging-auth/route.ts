@@ -61,6 +61,9 @@ export async function POST(req: NextRequest) {
     return privateNoStore(NextResponse.json({ error }, { status }));
   }
   const raw = bounded.text;
+  if (typeof raw !== "string" || raw.length === 0) {
+    return privateNoStore(NextResponse.json({ error: "Invalid body" }, { status: 400 }));
+  }
 
   let body: { password?: unknown; next?: unknown };
   try {
