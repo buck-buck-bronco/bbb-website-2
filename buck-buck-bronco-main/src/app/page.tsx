@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
-import { SiteImage } from "@/components/SiteImage";
 import { CommunityCounter } from "@/components/CommunityCounter";
 import { FaqList } from "@/components/FaqList";
 import { JsonLd } from "@/components/JsonLd";
@@ -40,7 +40,7 @@ export default function HomePage() {
           data-review-label="Hero background photo"
           data-review-kind="image"
         >
-          <SiteImage
+          <Image
             src={siteConfig.images.hero}
             alt="Orange Ford Bronco on a mountain road"
             fill
@@ -58,7 +58,7 @@ export default function HomePage() {
             data-review-id="home-brand"
             data-review-label="Brand mark"
           >
-            <SiteImage
+            <Image
               src={siteConfig.images.logo}
               alt=""
               width={160}
@@ -191,7 +191,7 @@ export default function HomePage() {
             data-review-label="Trail / Bronco photo"
             data-review-kind="image"
           >
-            <SiteImage
+            <Image
               src={siteConfig.images.story}
               alt="Black Ford Bronco at the cliffs"
               fill
@@ -231,7 +231,7 @@ export default function HomePage() {
               data-review-label="Bucking-horse emblem photo"
               data-review-kind="image"
             >
-              <SiteImage
+              <Image
                 src={siteConfig.images.authenticity}
                 alt={authenticityBeat.alt}
                 fill
@@ -272,7 +272,7 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="band__visual" aria-hidden>
-            <SiteImage
+            <Image
               src={siteConfig.images.logo}
               alt=""
               width={160}
@@ -318,7 +318,7 @@ export default function HomePage() {
             data-review-label="Bronco detail photo"
             data-review-kind="image"
           >
-            <SiteImage
+            <Image
               src={siteConfig.images.detail}
               alt="Ford Bronco headlight detail"
               fill

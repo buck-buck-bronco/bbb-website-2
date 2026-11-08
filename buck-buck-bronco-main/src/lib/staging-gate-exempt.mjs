@@ -6,7 +6,6 @@
 const EXACT = new Set([
   "/staging-gate",
   "/api/staging-auth",
-  "/_next/image",
   "/favicon.ico",
   "/robots.txt",
   "/brand/buck-buck-bronco-mark.webp",

@@ -19,16 +19,18 @@ function withRobots(res: NextResponse, host: string) {
     res.headers.set("X-Robots-Tag", "noindex, nofollow");
     res.headers.set("Cache-Control", "private, no-store");
   }
-  if (stagingLockEnabled(host)) {
-    res.cookies.set("bbb_staging_lock", "1", {
-      httpOnly: false,
-      secure: true,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 14,
-    });
-  }
   return res;
+}
+
+/** Optimizer responses stay off a locked host, including a warm image cache. */
+function lockedOptimizerDenied(host: string, pathname: string) {
+  if (!stagingLockEnabled(host)) return null;
+  if (pathname !== "/_next/image" && !pathname.startsWith("/_next/image/")) return null;
+  const denied = new NextResponse(null, { status: 404 });
+  denied.headers.set("Cache-Control", "private, no-store");
+  denied.headers.set("X-Robots-Tag", "noindex, nofollow");
+  denied.headers.set("Content-Type", "text/plain; charset=utf-8");
+  return denied;
 }
 
 export async function middleware(req: NextRequest) {
@@ -59,6 +61,9 @@ export async function middleware(req: NextRequest) {
     return withRobots(NextResponse.next(), host);
   }
 
+  const optimizerDenied = lockedOptimizerDenied(host, pathname);
+  if (optimizerDenied) return optimizerDenied;
+
   if (isStagingGateExempt(pathname)) {
     return withRobots(NextResponse.next(), host);
   }
@@ -75,5 +80,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image).*)"],
+  matcher: ["/((?!_next/static).*)"],
 };

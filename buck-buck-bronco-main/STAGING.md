@@ -13,6 +13,8 @@ The password is not stored in this repo. On the staging host, and on generated p
 
 The gate also locks every `*.vercel.app` hostname and any deployment with `VERCEL_ENV=preview`. `buckbuckbronco.com` stays open. `STAGING_LOCK=1` also locks any other non-production host, including local.
 
+Set `STAGING_LOCK=1` for the staging `next build`, on both the stable and preview build environments. That build serves original image files and does not use `/_next/image`. Start from a fresh build cache. Do not reuse `.next` or a build cache produced without `STAGING_LOCK=1`. The customer site build leaves `STAGING_LOCK` unset, so its images stay optimized.
+
 - Cookie name: `bbb_staging_auth` (HttpOnly, Secure, SameSite=Lax, 14 days). The value is a signed session, not the password. Secure is always set.
 - Gate page: `/staging-gate`
 - Review storage stays off unless `REVIEW_STORAGE_ENABLED` is exactly `1`. Older `REVIEW_SUPABASE_URL` or `REVIEW_SUPABASE_ANON_KEY` values do not turn it back on. There is no built-in database fallback.

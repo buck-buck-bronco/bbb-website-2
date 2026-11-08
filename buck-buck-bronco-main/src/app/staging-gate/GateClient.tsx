@@ -2,7 +2,7 @@
 
 import { FormEvent, useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { SiteImage } from "@/components/SiteImage";
+import Image from "next/image";
 import { siteConfig } from "@/lib/site";
 import { safeNextPath } from "@/lib/staging";
 
@@ -36,7 +36,7 @@ export function GateClient() {
   return (
     <div className="gate">
       <div className="gate__panel">
-        <SiteImage
+        <Image
           src={siteConfig.images.logo}
           alt={siteConfig.name}
           width={200}
