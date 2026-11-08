@@ -15,7 +15,7 @@ The gate also locks every `*.vercel.app` hostname and any deployment with `VERCE
 
 - Cookie name: `bbb_staging_auth` (httpOnly, 14 days). The value is a signed session, not the password.
 - Gate page: `/staging-gate`
-- Review storage stays off unless `REVIEW_SUPABASE_URL` and `REVIEW_SUPABASE_ANON_KEY` are both set. There is no built-in database fallback.
+- Review storage stays off unless `REVIEW_STORAGE_ENABLED` is exactly `1`. Older `REVIEW_SUPABASE_URL` or `REVIEW_SUPABASE_ANON_KEY` values do not turn it back on. There is no built-in database fallback.
 
 Do not commit the values.
 

@@ -14,8 +14,9 @@ import { stagingSessionValid } from "@/lib/staging-session";
 export const runtime = "nodejs";
 
 function withRobots(res: NextResponse, host: string) {
-  if (shouldNoindex(host)) {
+  if (shouldNoindex(host) || stagingLockEnabled(host)) {
     res.headers.set("X-Robots-Tag", "noindex, nofollow");
+    res.headers.set("Cache-Control", "private, no-store");
   }
   return res;
 }

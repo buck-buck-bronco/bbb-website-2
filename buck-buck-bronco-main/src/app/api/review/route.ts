@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { REVIEW_LIMIT, instanceLimiter, rateLimitIdentity } from "@/lib/instance-rate-limit.mjs";
 import { reviewBackend } from "@/lib/review/config";
 import { ReviewNotConfigured, createReviewEdit, listReviewEdits, updateReviewStatus } from "@/lib/review/store";
 import { STAGING_COOKIE, isProductionHost } from "@/lib/staging";
@@ -11,12 +12,32 @@ export const dynamic = "force-dynamic";
 const KINDS = new Set<ReviewKind>(["comment", "toggle", "image"]);
 const STATUSES = new Set<ReviewStatus>(["open", "done", "dismissed"]);
 
+function withPrivate(res: NextResponse) {
+  res.headers.set("Cache-Control", "private, no-store");
+  res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  return res;
+}
+
 function notFound() {
-  return NextResponse.json({ error: "Not found" }, { status: 404 });
+  return withPrivate(NextResponse.json({ error: "Not found" }, { status: 404 }));
+}
+
+function tooMany(retryAfter: number) {
+  const res = NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  res.headers.set("Retry-After", String(retryAfter));
+  return withPrivate(res);
+}
+
+function withinReviewLimit(req: NextRequest) {
+  const limit = instanceLimiter.take(
+    `review:${rateLimitIdentity(req.headers)}`,
+    REVIEW_LIMIT,
+  );
+  return limit.ok ? null : tooMany(limit.retryAfter);
 }
 
 function unavailable() {
-  return NextResponse.json({ error: "Not available" }, { status: 503 });
+  return withPrivate(NextResponse.json({ error: "Not available" }, { status: 503 }));
 }
 
 async function reviewAllowed(req: NextRequest): Promise<boolean> {
@@ -32,6 +53,8 @@ function storeFailure(error: unknown) {
 }
 
 export async function GET(req: NextRequest) {
+  const limited = withinReviewLimit(req);
+  if (limited) return limited;
   if (!(await reviewAllowed(req))) return notFound();
   try {
     const edits = await listReviewEdits();
@@ -42,6 +65,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const limited = withinReviewLimit(req);
+  if (limited) return limited;
   if (!(await reviewAllowed(req))) return notFound();
   let body: Partial<ReviewEditInput>;
   try {
@@ -82,6 +107,8 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
+  const limited = withinReviewLimit(req);
+  if (limited) return limited;
   if (!(await reviewAllowed(req))) return notFound();
   let body: { id?: string; status?: ReviewStatus };
   try {

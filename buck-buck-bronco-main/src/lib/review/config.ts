@@ -1,8 +1,14 @@
 /**
- * Review storage is off unless both values are set on the staging host.
- * There is no built-in project fallback.
+ * Review storage stays off unless this exact opt-in is "1".
+ * Older REVIEW_SUPABASE_URL / REVIEW_SUPABASE_ANON_KEY values, if still
+ * present on a host, do not turn storage back on by themselves.
  */
+export function reviewStorageExplicitlyEnabled(): boolean {
+  return process.env.REVIEW_STORAGE_ENABLED === "1";
+}
+
 export function reviewBackend(): { url: string; anonKey: string } | null {
+  if (!reviewStorageExplicitlyEnabled()) return null;
   const rawUrl = process.env.REVIEW_SUPABASE_URL?.trim() ?? "";
   const anonKey = process.env.REVIEW_SUPABASE_ANON_KEY?.trim() ?? "";
   if (!rawUrl || !anonKey) return null;

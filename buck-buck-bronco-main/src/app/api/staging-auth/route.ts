@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { AUTH_LIMIT, instanceLimiter, rateLimitIdentity } from "@/lib/instance-rate-limit.mjs";
+import { readBoundedBody } from "@/lib/read-bounded-body.mjs";
 import { STAGING_COOKIE, hostnameOf, safeNextPath } from "@/lib/staging";
 import {
   issueStagingSession,
@@ -12,8 +14,20 @@ export const runtime = "nodejs";
 
 const MAX_BODY = 4_000;
 
+function privateNoStore(res: NextResponse) {
+  res.headers.set("Cache-Control", "private, no-store");
+  res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  return res;
+}
+
+function tooMany(retryAfter: number) {
+  const res = NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  res.headers.set("Retry-After", String(retryAfter));
+  return privateNoStore(res);
+}
+
 function unauthorized() {
-  return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  return privateNoStore(NextResponse.json({ error: "Unauthorized" }, { status: 401 }));
 }
 
 function sameOrigin(req: NextRequest): boolean {
@@ -28,26 +42,33 @@ function sameOrigin(req: NextRequest): boolean {
 }
 
 export async function POST(req: NextRequest) {
+  const limit = instanceLimiter.take(
+    `auth:${rateLimitIdentity(req.headers)}`,
+    AUTH_LIMIT,
+  );
+  if (!limit.ok) return tooMany(limit.retryAfter);
+
   if (!sameOrigin(req)) return unauthorized();
   const contentType = req.headers.get("content-type") ?? "";
   if (!contentType.toLowerCase().includes("application/json")) {
-    return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+    return privateNoStore(NextResponse.json({ error: "Invalid body" }, { status: 400 }));
   }
 
-  const raw = await req.text();
-  if (raw.length > MAX_BODY) {
-    return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+  const bounded = await readBoundedBody(req, MAX_BODY);
+  if (!bounded.ok) {
+    return privateNoStore(NextResponse.json({ error: "Invalid body" }, { status: 400 }));
   }
+  const raw = bounded.text;
 
   let body: { password?: unknown; next?: unknown };
   try {
     const parsed = JSON.parse(raw) as unknown;
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-      return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+      return privateNoStore(NextResponse.json({ error: "Invalid body" }, { status: 400 }));
     }
     body = parsed as { password?: unknown; next?: unknown };
   } catch {
-    return NextResponse.json({ error: "Invalid body" }, { status: 400 });
+    return privateNoStore(NextResponse.json({ error: "Invalid body" }, { status: 400 }));
   }
 
   if (typeof body.password !== "string" || body.password.length === 0 || body.password.length > 200) {
@@ -68,10 +89,10 @@ export async function POST(req: NextRequest) {
   const res = NextResponse.json({ ok: true, next });
   res.cookies.set(STAGING_COOKIE, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: req.nextUrl.protocol === "https:",
     sameSite: "lax",
     path: "/",
     maxAge: stagingSessionMaxAge,
   });
-  return res;
+  return privateNoStore(res);
 }

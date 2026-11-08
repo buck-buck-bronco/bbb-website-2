@@ -1,6 +1,12 @@
 /** Fixed origin used only to normalize a relative return path. Not a redirect target. */
 const TRUSTED_ORIGIN = "https://buckbuckbronco.com";
 const CONTROLS = /[\u0000-\u001F\u007F\s]/;
+const ENCODED_SLASH = /%(?:2f|5c)/i;
+
+function pathnamePart(value) {
+  const noHash = value.split("#", 1)[0];
+  return noHash.split("?", 1)[0];
+}
 
 function structurallyRelative(value) {
   if (typeof value !== "string" || value.length === 0 || value.length > 300) return false;
@@ -10,14 +16,18 @@ function structurallyRelative(value) {
   return true;
 }
 
+function pathnameHasEncodedSlash(value) {
+  return ENCODED_SLASH.test(pathnamePart(value));
+}
+
 /**
  * Returns a canonical same-origin pathname, search, and hash.
- * The input is percent-decoded at most once, and only to reject unsafe forms.
- * The returned string is the URL serialization of the original input, so a
- * second call does not peel another encoding layer off the query.
+ * Percent-decoding runs once, and only to reject an unsafe pathname.
+ * Query encoding is left to the URL serializer so a repeated call does not
+ * peel another layer off an ordinary query.
  */
 export function safeNextPath(value) {
-  if (!structurallyRelative(value)) return "/";
+  if (!structurallyRelative(value) || pathnameHasEncodedSlash(value)) return "/";
 
   let decoded;
   try {
@@ -25,7 +35,7 @@ export function safeNextPath(value) {
   } catch {
     return "/";
   }
-  if (!structurallyRelative(decoded)) return "/";
+  if (!structurallyRelative(decoded) || pathnameHasEncodedSlash(decoded)) return "/";
 
   let url;
   try {
@@ -34,13 +44,14 @@ export function safeNextPath(value) {
     return "/";
   }
   if (url.origin !== TRUSTED_ORIGIN) return "/";
+  if (pathnameHasEncodedSlash(url.pathname)) return "/";
   return finalRelative(`${url.pathname}${url.search}${url.hash}`);
 }
 
-/** Reject a serialized path that canonicalization turned into // or slash-backslash. */
+/** Reject a serialized path that canonicalization turned into //, slash-backslash, or an encoded slash. */
 function finalRelative(serialized) {
-  if (!structurallyRelative(serialized)) return "/";
-  if (serialized.includes("//")) return "/";
+  if (!structurallyRelative(serialized) || pathnameHasEncodedSlash(serialized)) return "/";
+  if (pathnamePart(serialized).includes("//")) return "/";
 
   let again;
   try {
@@ -49,8 +60,11 @@ function finalRelative(serialized) {
     return "/";
   }
   if (again.origin !== TRUSTED_ORIGIN) return "/";
+  if (pathnameHasEncodedSlash(again.pathname) || again.pathname.includes("\\")) return "/";
+  if (again.pathname.startsWith("//") || again.pathname.startsWith("/\\")) return "/";
   const stable = `${again.pathname}${again.search}${again.hash}`;
   if (stable !== serialized) return "/";
-  if (!structurallyRelative(stable) || stable.includes("//")) return "/";
+  if (!structurallyRelative(stable) || pathnameHasEncodedSlash(stable)) return "/";
+  if (pathnamePart(stable).includes("//")) return "/";
   return stable;
 }
