@@ -30,5 +30,26 @@ export function safeNextPath(value) {
     return "/";
   }
   if (url.origin !== TRUSTED_ORIGIN) return "/";
-  return `${url.pathname}${url.search}${url.hash}`;
+  return finalRelative(`${url.pathname}${url.search}${url.hash}`);
+}
+
+/** Reject a serialized path that canonicalization turned into // or slash-backslash. */
+function finalRelative(serialized) {
+  if (typeof serialized !== "string" || serialized.length === 0 || serialized.length > 300) return "/";
+  if (CONTROLS.test(serialized)) return "/";
+  if (!serialized.startsWith("/") || serialized.startsWith("//") || serialized.startsWith("/\\")) return "/";
+  if (serialized.includes("\\") || serialized.includes("//") || serialized.includes("://")) return "/";
+
+  let again;
+  try {
+    again = new URL(serialized, TRUSTED_ORIGIN);
+  } catch {
+    return "/";
+  }
+  if (again.origin !== TRUSTED_ORIGIN) return "/";
+  const stable = `${again.pathname}${again.search}${again.hash}`;
+  if (stable !== serialized) return "/";
+  if (!stable.startsWith("/") || stable.startsWith("//") || stable.startsWith("/\\")) return "/";
+  if (stable.includes("\\") || stable.includes("//") || stable.includes("://")) return "/";
+  return stable;
 }

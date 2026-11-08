@@ -15,5 +15,32 @@ assert.equal(safeNextPath("/bucked\tbad"), "/");
 assert.equal(safeNextPath("/bucked bad"), "/");
 assert.equal(safeNextPath("/%09bucked"), "/");
 assert.equal(safeNextPath("/%2f%2fbucked"), "/");
+assert.equal(safeNextPath("/x/..//y"), "/");
+assert.equal(safeNextPath("/.//bucked"), "/");
+assert.equal(safeNextPath("/a/.//bucked"), "/");
+assert.equal(safeNextPath("/a/..//"), "/");
+assert.equal(safeNextPath("/%2e%2e//bucked"), "/");
+
+const samples = [
+  "/",
+  "/bucked",
+  "/bucked?x=1#cards",
+  "/play/../bucked",
+  "/x/..//y",
+  "/.//bucked",
+  "/a/.//bucked",
+  "",
+  "bucked",
+  "//bucked",
+  "/\\bucked",
+];
+for (const sample of samples) {
+  const once = safeNextPath(sample);
+  assert.equal(safeNextPath(once), once);
+  assert.equal(once.startsWith("//"), false);
+  assert.equal(once.startsWith("/\\"), false);
+  assert.equal(once.includes("\\"), false);
+  assert.equal(once.includes("//"), false);
+}
 
 console.log("safe-next-path checks ok");
