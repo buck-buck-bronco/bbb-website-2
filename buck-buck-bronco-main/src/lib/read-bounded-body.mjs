@@ -1,12 +1,31 @@
 /**
- * Read a request body up to maxBytes. A declared Content-Length above the cap
- * is rejected before the stream is read. This is a per-request limit, not a
- * platform throttle.
+ * Read a request body up to maxBytes.
+ * Over-cap declared length and over-cap streamed bytes are "length" (HTTP 413).
+ * A non-numeric Content-Length or a failed read is malformed (HTTP 400).
+ * This is a per-request limit, not a platform throttle or a slow-client timeout.
  */
+export function bodyRejectionStatus(reason) {
+  return reason === "length" ? 413 : 400;
+}
+
+async function cancelStream(stream) {
+  if (!stream || typeof stream.cancel !== "function") return;
+  try {
+    await stream.cancel();
+  } catch {
+    /* already closed or not cancellable */
+  }
+}
+
 export async function readBoundedBody(request, maxBytes) {
   const declared = request.headers.get("content-length");
   if (declared !== null) {
-    if (!/^\d+$/.test(declared) || Number(declared) > maxBytes) {
+    if (!/^\d+$/.test(declared)) {
+      await cancelStream(request.body);
+      return { ok: false, reason: "malformed" };
+    }
+    if (Number(declared) > maxBytes) {
+      await cancelStream(request.body);
       return { ok: false, reason: "length" };
     }
   }
@@ -21,7 +40,11 @@ export async function readBoundedBody(request, maxBytes) {
       if (done) break;
       total += value.byteLength;
       if (total > maxBytes) {
-        await reader.cancel();
+        try {
+          await reader.cancel();
+        } catch {
+          /* already closed */
+        }
         return { ok: false, reason: "length" };
       }
       chunks.push(value);

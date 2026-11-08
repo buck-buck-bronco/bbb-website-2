@@ -9,6 +9,7 @@ import {
   stagingLockEnabled,
 } from "@/lib/staging";
 import { stagingSessionValid } from "@/lib/staging-session";
+import { isStagingGateExempt } from "@/lib/staging-gate-exempt.mjs";
 
 /** Next 16.4.5 runs middleware on Edge unless this is set. Node is required for crypto.timingSafeEqual. */
 export const runtime = "nodejs";
@@ -49,18 +50,7 @@ export async function middleware(req: NextRequest) {
     return withRobots(NextResponse.next(), host);
   }
 
-  if (
-    pathname === STAGING_GATE_PATH ||
-    pathname.startsWith(`${STAGING_GATE_PATH}/`) ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon") ||
-    pathname.startsWith("/brand") ||
-    pathname.startsWith("/images") ||
-    pathname === "/robots.txt" ||
-    pathname === "/sitemap.xml" ||
-    pathname === "/llms.txt" ||
-    pathname === "/api/staging-auth"
-  ) {
+  if (isStagingGateExempt(pathname)) {
     return withRobots(NextResponse.next(), host);
   }
 

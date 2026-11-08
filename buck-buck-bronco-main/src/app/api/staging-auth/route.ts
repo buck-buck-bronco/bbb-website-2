@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AUTH_LIMIT, instanceLimiter, rateLimitIdentity } from "@/lib/instance-rate-limit.mjs";
-import { readBoundedBody } from "@/lib/read-bounded-body.mjs";
+import { bodyRejectionStatus, readBoundedBody } from "@/lib/read-bounded-body.mjs";
 import { STAGING_COOKIE, hostnameOf, safeNextPath } from "@/lib/staging";
 import {
   issueStagingSession,
@@ -56,7 +56,9 @@ export async function POST(req: NextRequest) {
 
   const bounded = await readBoundedBody(req, MAX_BODY);
   if (!bounded.ok) {
-    return privateNoStore(NextResponse.json({ error: "Invalid body" }, { status: 400 }));
+    const status = bodyRejectionStatus(bounded.reason);
+    const error = status === 413 ? "Payload too large" : "Invalid body";
+    return privateNoStore(NextResponse.json({ error }, { status }));
   }
   const raw = bounded.text;
 
@@ -89,7 +91,7 @@ export async function POST(req: NextRequest) {
   const res = NextResponse.json({ ok: true, next });
   res.cookies.set(STAGING_COOKIE, token, {
     httpOnly: true,
-    secure: req.nextUrl.protocol === "https:",
+    secure: true,
     sameSite: "lax",
     path: "/",
     maxAge: stagingSessionMaxAge,

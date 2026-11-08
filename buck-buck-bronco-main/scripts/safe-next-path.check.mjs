@@ -26,6 +26,10 @@ assert.equal(safeNextPath("/play/../%2fbucked"), "/");
 assert.equal(safeNextPath("/play/../%2Fbucked"), "/");
 assert.equal(safeNextPath("/play/../%5cbucked"), "/");
 assert.equal(safeNextPath("/bucked?q=%2F"), "/bucked?q=%2F");
+assert.equal(safeNextPath("/play%3Fpart=%252fbucked"), "/");
+assert.equal(safeNextPath("/play%23part=%255cbucked"), "/");
+assert.equal(safeNextPath("/bucked%252f"), "/");
+assert.equal(safeNextPath("/bucked%255C"), "/");
 
 const samples = [
   "/",
@@ -39,6 +43,8 @@ const samples = [
   "/play/../bucked?q=%2541",
   "/play/../%2fbucked",
   "/bucked?q=%2F",
+  "/play%3Fpart=%252fbucked",
+  "/play%23part=%255cbucked",
   "",
   "bucked",
   "//bucked",

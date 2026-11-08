@@ -1,11 +1,14 @@
 /** Fixed origin used only to normalize a relative return path. Not a redirect target. */
 const TRUSTED_ORIGIN = "https://buckbuckbronco.com";
 const CONTROLS = /[\u0000-\u001F\u007F\s]/;
-const ENCODED_SLASH = /%(?:2f|5c)/i;
+const PATH_DELIM = /%(?:25|2f|5c)/i;
 
-function pathnamePart(value) {
-  const noHash = value.split("#", 1)[0];
-  return noHash.split("?", 1)[0];
+/** Pathname boundary from the original string. Do not re-split a decoded pathname. */
+function rawPathname(value) {
+  const hash = value.indexOf("#");
+  const noHash = hash === -1 ? value : value.slice(0, hash);
+  const query = noHash.indexOf("?");
+  return query === -1 ? noHash : noHash.slice(0, query);
 }
 
 function structurallyRelative(value) {
@@ -16,26 +19,34 @@ function structurallyRelative(value) {
   return true;
 }
 
-function pathnameHasEncodedSlash(value) {
-  return ENCODED_SLASH.test(pathnamePart(value));
+function pathnameHasDelim(pathname) {
+  return PATH_DELIM.test(pathname);
+}
+
+function onceDecodedPathname(pathname) {
+  const decoded = decodeURIComponent(pathname);
+  if (pathnameHasDelim(decoded)) return null;
+  return decoded;
 }
 
 /**
  * Returns a canonical same-origin pathname, search, and hash.
- * Percent-decoding runs once, and only to reject an unsafe pathname.
- * Query encoding is left to the URL serializer so a repeated call does not
- * peel another layer off an ordinary query.
+ * The pathname is taken from the original string, then scanned raw and after
+ * one decode, without treating a decoded ? or # as a new query boundary.
+ * Query encoding is left to the URL serializer.
  */
 export function safeNextPath(value) {
-  if (!structurallyRelative(value) || pathnameHasEncodedSlash(value)) return "/";
+  if (!structurallyRelative(value) || pathnameHasDelim(rawPathname(value))) return "/";
 
-  let decoded;
+  let decodedPath;
+  let decodedAll;
   try {
-    decoded = decodeURIComponent(value);
+    decodedPath = onceDecodedPathname(rawPathname(value));
+    decodedAll = decodeURIComponent(value);
   } catch {
     return "/";
   }
-  if (!structurallyRelative(decoded) || pathnameHasEncodedSlash(decoded)) return "/";
+  if (decodedPath === null || !structurallyRelative(decodedAll)) return "/";
 
   let url;
   try {
@@ -43,15 +54,25 @@ export function safeNextPath(value) {
   } catch {
     return "/";
   }
-  if (url.origin !== TRUSTED_ORIGIN) return "/";
-  if (pathnameHasEncodedSlash(url.pathname)) return "/";
+  if (url.origin !== TRUSTED_ORIGIN || pathnameHasDelim(url.pathname)) return "/";
+  try {
+    if (onceDecodedPathname(url.pathname) === null) return "/";
+  } catch {
+    return "/";
+  }
   return finalRelative(`${url.pathname}${url.search}${url.hash}`);
 }
 
-/** Reject a serialized path that canonicalization turned into //, slash-backslash, or an encoded slash. */
+/** Reject a serialized path that canonicalization turned into //, slash-backslash, or an encoded delimiter. */
 function finalRelative(serialized) {
-  if (!structurallyRelative(serialized) || pathnameHasEncodedSlash(serialized)) return "/";
-  if (pathnamePart(serialized).includes("//")) return "/";
+  const path = rawPathname(serialized);
+  if (!structurallyRelative(serialized) || pathnameHasDelim(path)) return "/";
+  try {
+    if (onceDecodedPathname(path) === null) return "/";
+  } catch {
+    return "/";
+  }
+  if (path.includes("//")) return "/";
 
   let again;
   try {
@@ -60,11 +81,16 @@ function finalRelative(serialized) {
     return "/";
   }
   if (again.origin !== TRUSTED_ORIGIN) return "/";
-  if (pathnameHasEncodedSlash(again.pathname) || again.pathname.includes("\\")) return "/";
+  if (pathnameHasDelim(again.pathname) || again.pathname.includes("\\")) return "/";
+  try {
+    if (onceDecodedPathname(again.pathname) === null) return "/";
+  } catch {
+    return "/";
+  }
   if (again.pathname.startsWith("//") || again.pathname.startsWith("/\\")) return "/";
   const stable = `${again.pathname}${again.search}${again.hash}`;
   if (stable !== serialized) return "/";
-  if (!structurallyRelative(stable) || pathnameHasEncodedSlash(stable)) return "/";
-  if (pathnamePart(stable).includes("//")) return "/";
+  if (!structurallyRelative(stable) || pathnameHasDelim(rawPathname(stable))) return "/";
+  if (rawPathname(stable).includes("//")) return "/";
   return stable;
 }

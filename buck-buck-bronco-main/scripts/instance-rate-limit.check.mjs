@@ -24,10 +24,17 @@ for (let i = 0; i < REVIEW_LIMIT; i += 1) {
 assert.equal(review.take("review:synthetic", REVIEW_LIMIT, now).ok, false);
 
 const capped = createFixedWindowLimiter(2);
-assert.equal(capped.take("a", 10, now).ok, true);
-assert.equal(capped.take("b", 10, now).ok, true);
-assert.equal(capped.take("c", 10, now + 5).ok, true);
+for (let i = 0; i < 3; i += 1) {
+  assert.equal(capped.take("live-a", 3, now).ok, true);
+}
+assert.equal(capped.take("live-a", 3, now).ok, false);
+assert.equal(capped.take("live-b", 3, now).ok, true);
+const deniedNew = capped.take("live-c", 3, now + 5);
+assert.equal(deniedNew.ok, false);
+assert.ok(deniedNew.retryAfter >= 1);
+assert.equal(capped.take("live-a", 3, now + 5).ok, false);
 assert.equal(capped.size(), 2);
+assert.equal(capped.take("live-c", 3, now + WINDOW_MS).ok, true);
 
 const forwarded = new Headers({ "x-forwarded-for": "192.0.2.10, 203.0.113.5" });
 assert.equal(rateLimitIdentity(forwarded, {}), "instance-default");
