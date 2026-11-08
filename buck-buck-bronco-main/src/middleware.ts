@@ -10,6 +10,9 @@ import {
 } from "@/lib/staging";
 import { stagingSessionValid } from "@/lib/staging-session";
 
+/** Next 16.4.5 runs middleware on Edge unless this is set. Node is required for crypto.timingSafeEqual. */
+export const runtime = "nodejs";
+
 function withRobots(res: NextResponse, host: string) {
   if (shouldNoindex(host)) {
     res.headers.set("X-Robots-Tag", "noindex, nofollow");

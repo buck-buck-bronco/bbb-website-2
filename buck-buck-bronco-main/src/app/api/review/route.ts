@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { reviewBackend } from "@/lib/review/config";
 import { ReviewNotConfigured, createReviewEdit, listReviewEdits, updateReviewStatus } from "@/lib/review/store";
-import { STAGING_COOKIE, isProductionHost, stagingLockEnabled } from "@/lib/staging";
+import { STAGING_COOKIE, isProductionHost } from "@/lib/staging";
 import { stagingSessionValid } from "@/lib/staging-session";
 import type { ReviewEditInput, ReviewKind, ReviewStatus } from "@/lib/review/types";
 
+export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const KINDS = new Set<ReviewKind>(["comment", "toggle", "image"]);
@@ -22,7 +23,6 @@ async function reviewAllowed(req: NextRequest): Promise<boolean> {
   const host = req.headers.get("host") ?? "";
   if (isProductionHost(host)) return false;
   if (!reviewBackend()) return false;
-  if (!stagingLockEnabled(host)) return true;
   return stagingSessionValid(req.cookies.get(STAGING_COOKIE)?.value);
 }
 

@@ -37,36 +37,7 @@ export function shouldNoindex(host: string) {
   return isStagingHost(host) || isPreviewDeployment() || isGeneratedDeploymentHost(host);
 }
 
-/**
- * Same-origin path only. Rejects protocol-relative and backslash targets.
- * Returns "/" when the value is not a safe in-app path.
- */
-export function safeNextPath(value: unknown): string {
-  if (typeof value !== "string" || value.length === 0 || value.length > 300) {
-    return "/";
-  }
-  if (!value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) {
-    return "/";
-  }
-  if (value.includes("\\") || value.includes("://") || value.includes("\0")) {
-    return "/";
-  }
-  let decoded = value;
-  try {
-    decoded = decodeURIComponent(value);
-  } catch {
-    return "/";
-  }
-  if (
-    !decoded.startsWith("/") ||
-    decoded.startsWith("//") ||
-    decoded.includes("\\") ||
-    decoded.includes("://")
-  ) {
-    return "/";
-  }
-  return value;
-}
+export { safeNextPath } from "./safe-next-path.mjs";
 
 /** Staging host always. Local/preview only with ?review=1. Never on the public domain. */
 export function isReviewUiEnabled(host: string, search = "") {
