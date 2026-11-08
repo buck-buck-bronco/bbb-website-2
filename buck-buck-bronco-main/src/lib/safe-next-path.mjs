@@ -2,15 +2,22 @@
 const TRUSTED_ORIGIN = "https://buckbuckbronco.com";
 const CONTROLS = /[\u0000-\u001F\u007F\s]/;
 
+function structurallyRelative(value) {
+  if (typeof value !== "string" || value.length === 0 || value.length > 300) return false;
+  if (CONTROLS.test(value)) return false;
+  if (!value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) return false;
+  if (value.includes("\\") || value.includes("://")) return false;
+  return true;
+}
+
 /**
  * Returns a canonical same-origin pathname, search, and hash.
- * Control characters, whitespace, and non-relative targets become "/".
+ * The input is percent-decoded at most once, and only to reject unsafe forms.
+ * The returned string is the URL serialization of the original input, so a
+ * second call does not peel another encoding layer off the query.
  */
 export function safeNextPath(value) {
-  if (typeof value !== "string" || value.length === 0 || value.length > 300) return "/";
-  if (CONTROLS.test(value)) return "/";
-  if (!value.startsWith("/") || value.startsWith("//") || value.startsWith("/\\")) return "/";
-  if (value.includes("\\") || value.includes("://")) return "/";
+  if (!structurallyRelative(value)) return "/";
 
   let decoded;
   try {
@@ -18,14 +25,11 @@ export function safeNextPath(value) {
   } catch {
     return "/";
   }
-  if (CONTROLS.test(decoded)) return "/";
-  if (!decoded.startsWith("/") || decoded.startsWith("//") || decoded.includes("\\") || decoded.includes("://")) {
-    return "/";
-  }
+  if (!structurallyRelative(decoded)) return "/";
 
   let url;
   try {
-    url = new URL(decoded, TRUSTED_ORIGIN);
+    url = new URL(value, TRUSTED_ORIGIN);
   } catch {
     return "/";
   }
@@ -35,10 +39,8 @@ export function safeNextPath(value) {
 
 /** Reject a serialized path that canonicalization turned into // or slash-backslash. */
 function finalRelative(serialized) {
-  if (typeof serialized !== "string" || serialized.length === 0 || serialized.length > 300) return "/";
-  if (CONTROLS.test(serialized)) return "/";
-  if (!serialized.startsWith("/") || serialized.startsWith("//") || serialized.startsWith("/\\")) return "/";
-  if (serialized.includes("\\") || serialized.includes("//") || serialized.includes("://")) return "/";
+  if (!structurallyRelative(serialized)) return "/";
+  if (serialized.includes("//")) return "/";
 
   let again;
   try {
@@ -49,7 +51,6 @@ function finalRelative(serialized) {
   if (again.origin !== TRUSTED_ORIGIN) return "/";
   const stable = `${again.pathname}${again.search}${again.hash}`;
   if (stable !== serialized) return "/";
-  if (!stable.startsWith("/") || stable.startsWith("//") || stable.startsWith("/\\")) return "/";
-  if (stable.includes("\\") || stable.includes("//") || stable.includes("://")) return "/";
+  if (!structurallyRelative(stable) || stable.includes("//")) return "/";
   return stable;
 }
