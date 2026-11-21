@@ -8,16 +8,38 @@ const headers = {
   Prefer: "return=representation",
 };
 
-export async function listReviewEdits(): Promise<ReviewEdit[]> {
-  const res = await fetch(
-    `${reviewSupabase.url}/rest/v1/${REVIEW_TABLE}?select=*&order=created_at.desc`,
-    {
-      headers,
+function explainFetchFailure(error: unknown): string {
+  if (error instanceof Error && error.message) {
+    if (/fetch failed|Failed to fetch|NetworkError|ENOTFOUND|ECONNREFUSED/i.test(error.message)) {
+      return "Review database is unreachable right now. Your edit was kept on this device and will retry.";
+    }
+    return error.message;
+  }
+  return "Review database request failed";
+}
+
+async function supabaseFetch(path: string, init?: RequestInit): Promise<Response> {
+  try {
+    return await fetch(`${reviewSupabase.url}/rest/v1/${path}`, {
+      ...init,
+      headers: {
+        ...headers,
+        ...(init?.headers ?? {}),
+      },
       cache: "no-store",
-    },
+    });
+  } catch (error) {
+    throw new Error(explainFetchFailure(error));
+  }
+}
+
+export async function listReviewEdits(): Promise<ReviewEdit[]> {
+  const res = await supabaseFetch(
+    `${REVIEW_TABLE}?select=*&order=created_at.desc`,
   );
   if (!res.ok) {
-    throw new Error(`Failed to load review edits (${res.status})`);
+    const detail = await res.text();
+    throw new Error(detail || `Failed to load review edits (${res.status})`);
   }
   return (await res.json()) as ReviewEdit[];
 }
@@ -37,9 +59,8 @@ export async function createReviewEdit(
     meta: input.meta ?? {},
   };
 
-  const res = await fetch(`${reviewSupabase.url}/rest/v1/${REVIEW_TABLE}`, {
+  const res = await supabaseFetch(REVIEW_TABLE, {
     method: "POST",
-    headers,
     body: JSON.stringify(payload),
   });
 
@@ -49,18 +70,33 @@ export async function createReviewEdit(
   }
 
   const rows = (await res.json()) as ReviewEdit[];
-  return rows[0];
+  const created = rows[0];
+  if (!created?.id) {
+    throw new Error("Save did not return a confirmed edit id");
+  }
+
+  // Confirm the row is actually readable before telling the reviewer it stuck.
+  const confirm = await supabaseFetch(
+    `${REVIEW_TABLE}?id=eq.${encodeURIComponent(created.id)}&select=*`,
+  );
+  if (!confirm.ok) {
+    throw new Error(`Saved edit could not be confirmed (${confirm.status})`);
+  }
+  const confirmed = (await confirm.json()) as ReviewEdit[];
+  if (!confirmed[0]?.id) {
+    throw new Error("Saved edit could not be confirmed in the inbox");
+  }
+  return confirmed[0];
 }
 
 export async function updateReviewStatus(
   id: string,
   status: ReviewStatus,
 ): Promise<ReviewEdit> {
-  const res = await fetch(
-    `${reviewSupabase.url}/rest/v1/${REVIEW_TABLE}?id=eq.${encodeURIComponent(id)}`,
+  const res = await supabaseFetch(
+    `${REVIEW_TABLE}?id=eq.${encodeURIComponent(id)}`,
     {
       method: "PATCH",
-      headers,
       body: JSON.stringify({ status }),
     },
   );
@@ -68,5 +104,8 @@ export async function updateReviewStatus(
     throw new Error(`Failed to update status (${res.status})`);
   }
   const rows = (await res.json()) as ReviewEdit[];
+  if (!rows[0]?.id) {
+    throw new Error("Status update did not return the edit");
+  }
   return rows[0];
 }

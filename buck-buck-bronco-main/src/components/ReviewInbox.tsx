@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, useTransition } from "react";
-import { fetchReviewEdits, patchReviewStatus } from "@/lib/review/client";
+import {
+  fetchReviewEdits,
+  flushPendingReviewEdits,
+  patchReviewStatus,
+} from "@/lib/review/client";
 import type { ReviewEdit, ReviewStatus } from "@/lib/review/types";
 
 function formatWhen(iso: string) {
@@ -32,7 +36,13 @@ export function ReviewInbox() {
     startTransition(async () => {
       try {
         setError(null);
+        const flush = await flushPendingReviewEdits();
         setEdits(await fetchReviewEdits());
+        if (flush.remaining > 0) {
+          setError(
+            `${flush.remaining} edit${flush.remaining === 1 ? "" : "s"} still waiting to sync to the shared inbox. Kept safely on this device.`,
+          );
+        }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Load failed");
       }
@@ -111,6 +121,9 @@ export function ReviewInbox() {
               <div className="review-inbox__meta">
                 <span className="review-pill">{kindLabel(edit.kind)}</span>
                 <span className="review-pill review-pill--muted">{edit.status}</span>
+                {edit.id.startsWith("pending:") || edit.meta?.pending_sync ? (
+                  <span className="review-pill">Syncing…</span>
+                ) : null}
                 <span>{formatWhen(edit.created_at)}</span>
               </div>
               <h2>{edit.element_label}</h2>

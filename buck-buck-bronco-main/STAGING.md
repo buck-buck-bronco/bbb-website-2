@@ -49,6 +49,12 @@ Stable staging host: `https://buck-buck-bronco-staging.vercel.app`
 
 Picture swaps and hide states also preview live on the staging pages.
 
+### Edit durability
+
+- Successful saves are confirmed in the shared Supabase inbox before the UI says they synced.
+- If the shared inbox is temporarily down, the edit is kept on this device and retries automatically — it does not disappear.
+- Open **Your edits** and hit **Refresh** to force a sync retry.
+
 ## Local staging
 
 ```bash

@@ -198,7 +198,7 @@ export function ReviewMode() {
 
       startTransition(async () => {
         try {
-          await postReviewEdit({
+          const result = await postReviewEdit({
             author_name: name,
             page_path: pathname,
             element_id: selected.id,
@@ -216,11 +216,13 @@ export function ReviewMode() {
             image_url: kind === "image" ? imageUrl.trim() : null,
           });
           setMessage(
-            kind === "comment"
-              ? "Comment saved. Open Your edits anytime to see everything you submitted."
-              : kind === "toggle"
-                ? "Preference saved."
-                : "Picture update saved.",
+            result.synced
+              ? kind === "comment"
+                ? "Comment saved to the shared inbox. Open Your edits anytime."
+                : kind === "toggle"
+                  ? "Preference saved to the shared inbox."
+                  : "Picture update saved to the shared inbox."
+              : "Saved on this device. Shared inbox sync will retry automatically — your note is not lost.",
           );
           setSelected(null);
           try {
@@ -228,7 +230,7 @@ export function ReviewMode() {
             setEdits(next);
             applyLiveOverlays(next, pathname);
           } catch {
-            /* keep saved confirmation even if the inbox reload fails */
+            setEdits((prev) => [result.edit, ...prev.filter((e) => e.id !== result.edit.id)]);
           }
         } catch (err) {
           setError(err instanceof Error ? err.message : "Save failed");
