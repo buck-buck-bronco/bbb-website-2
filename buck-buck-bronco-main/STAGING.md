@@ -8,12 +8,15 @@ The review dock and **Your edits** links are **staging / localhost / preview onl
 
 **Password:** `SmileBucked13`
 
-Set on the staging Vercel project as:
+Optional override on the staging Vercel project:
 
 ```bash
-STAGING_PASSWORD=SmileBucked13
+STAGING_GATE_PASSWORD=SmileBucked13
 STAGING_LOCK=1
 ```
+
+If `STAGING_GATE_PASSWORD` is unset, the app uses `SmileBucked13` from code.
+Do **not** rely on the old `STAGING_PASSWORD` env key — it drifted and was retired.
 
 - Gate activates when `STAGING_LOCK=1` **or** the host looks like the staging app (`buck-buck-bronco-staging.vercel.app`).
 - Cookie name: `bbb_staging_auth` (httpOnly, 14 days).

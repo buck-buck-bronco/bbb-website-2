@@ -1,8 +1,12 @@
 export const STAGING_COOKIE = "bbb_staging_auth";
 export const STAGING_GATE_PATH = "/staging-gate";
 
-/** Fallback only when env is missing; also documented in STAGING.md */
-const STAGING_PASSWORD_FALLBACK = "SmileBucked13";
+/**
+ * Canonical staging gate password (documented in STAGING.md).
+ * Prefer STAGING_GATE_PASSWORD. Do not read STAGING_PASSWORD — that
+ * Vercel env drifted from the docs and rejected SmileBucked13.
+ */
+const STAGING_PASSWORD_CANONICAL = "SmileBucked13";
 
 const PRODUCTION_HOSTS = new Set([
   "buckbuckbronco.com",
@@ -52,7 +56,8 @@ export function stagingLockEnabled(host: string) {
   return isStagingHost(host);
 }
 
-/** Server-only. Prefer STAGING_PASSWORD env; fallback keeps staging usable. */
+/** Server-only. Prefer STAGING_GATE_PASSWORD; otherwise the documented password. */
 export function getStagingPassword(): string {
-  return process.env.STAGING_PASSWORD || STAGING_PASSWORD_FALLBACK;
+  const fromEnv = process.env.STAGING_GATE_PASSWORD?.trim();
+  return fromEnv || STAGING_PASSWORD_CANONICAL;
 }
