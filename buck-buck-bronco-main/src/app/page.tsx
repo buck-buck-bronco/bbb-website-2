@@ -7,6 +7,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { Reveal } from "@/components/Reveal";
 import {
   authenticityBeat,
+  cardsBeat,
   etiquette,
   faqs,
   findBucks,
@@ -85,7 +86,7 @@ export default function HomePage() {
             data-review-id="home-support"
             data-review-label="Hero supporting sentence"
           >
-            {siteConfig.definition}
+            {siteConfig.heroSupport}
           </p>
           <div
             className="hero__actions"
@@ -261,15 +262,22 @@ export default function HomePage() {
       >
         <Reveal className="band">
           <div className="band__copy">
-            <p className="section__kicker">Printable cards</p>
-            <h2 className="section__title">You’ve been Bucked</h2>
-            <p className="section__lede">
-              Free printable cards with the Buck Buck Bronco logo. Add a note,
-              download a PNG, and tuck one with your next horse.
-            </p>
-            <Link href="/bucked" className="btn-cta">
-              Open the tag maker
-            </Link>
+            <p className="section__kicker">{cardsBeat.kicker}</p>
+            <h2 className="section__title">{cardsBeat.title}</h2>
+            <p className="section__lede section__lede--wide">{cardsBeat.lead}</p>
+            <div className="band__actions">
+              <Link href="/bucked" className="btn-cta">
+                Open the tag maker
+              </Link>
+              <a
+                href={siteConfig.community.facebook}
+                className="btn-ghost"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Facebook page + QR
+              </a>
+            </div>
           </div>
           <div className="band__visual" aria-hidden>
             <Image

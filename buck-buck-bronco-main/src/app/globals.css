@@ -117,11 +117,11 @@
     display: block;
     width: 2.75rem;
     height: 2.75rem;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     background: transparent;
     border: 0;
-    border-radius: 0;
+    border-radius: var(--radius-sm);
     padding: 0;
   }
 
@@ -446,14 +446,16 @@
     display: block;
     width: clamp(4.5rem, 14vw, 7rem);
     height: auto;
+    aspect-ratio: 1;
     max-width: 100%;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     border: 0;
-    border-radius: 0;
+    border-radius: var(--radius-md);
     background: transparent;
     padding: 0;
     flex-shrink: 0;
+    box-shadow: 0 10px 28px color-mix(in srgb, #000 35%, transparent);
   }
 
   .hero__brand-name {
@@ -851,6 +853,13 @@
     color: color-mix(in srgb, var(--snow) 75%, transparent);
   }
 
+  .band__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.35rem;
+  }
+
   .band__mark {
     display: flex;
     justify-content: center;
@@ -875,23 +884,17 @@
     position: relative;
     z-index: 1;
     display: block;
-    width: min(7.5rem, 38vw);
+    width: min(8.5rem, 42vw);
     height: auto;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     border: 0;
-    border-radius: 0;
+    border-radius: var(--radius-md);
     padding: 0;
     background: transparent;
-    filter:
-      drop-shadow(0 0 6px color-mix(in srgb, var(--trail) 88%, transparent))
-      drop-shadow(0 0 16px color-mix(in srgb, var(--trail) 42%, transparent));
-  }
-
-  @media (min-width: 1024px) and (hover: hover) {
-    .band__logo {
-      animation: logo-glow 4.8s ease-in-out infinite;
-    }
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--trail) 35%, transparent),
+      0 12px 28px color-mix(in srgb, #000 45%, transparent);
   }
 
   .press-feature {
@@ -1237,10 +1240,10 @@
     display: block;
     width: 3.5rem;
     height: 3.5rem;
-    object-fit: contain;
+    object-fit: cover;
     object-position: center;
     border: 0;
-    border-radius: 0;
+    border-radius: var(--radius-sm);
     padding: 0;
     background: transparent;
     flex-shrink: 0;
