@@ -55,6 +55,13 @@ Picture swaps and hide states also preview live on the staging pages.
 - If the shared inbox is temporarily down, the edit is kept on this device and retries automatically — it does not disappear.
 - Open **Your edits** and hit **Refresh** to force a sync retry.
 
+### Status workflow (Damien / agents)
+
+- Leave reviewer notes **open** until Damien explicitly asks to implement them.
+- After implementing, verify the change on the **live** site (`buckbuckbronco.com`) or the intended host.
+- Only then mark the edit **done** (or **dismissed** if intentionally skipped).
+- Do not bulk-mark old notes done without a live-site verification pass.
+
 ## Local staging
 
 ```bash
