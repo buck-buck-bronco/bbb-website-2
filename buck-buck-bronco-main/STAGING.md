@@ -8,12 +8,15 @@ The review dock and **Your edits** links are **staging / localhost / preview onl
 
 **Password:** `SmileBucked13`
 
-Set on the staging Vercel project as:
+Optional override on the staging Vercel project:
 
 ```bash
-STAGING_PASSWORD=SmileBucked13
+STAGING_GATE_PASSWORD=SmileBucked13
 STAGING_LOCK=1
 ```
+
+If `STAGING_GATE_PASSWORD` is unset, the app uses `SmileBucked13` from code.
+Do **not** rely on the old `STAGING_PASSWORD` env key — it drifted and was retired.
 
 - Gate activates when `STAGING_LOCK=1` **or** the host looks like the staging app (`buck-buck-bronco-staging.vercel.app`).
 - Cookie name: `bbb_staging_auth` (httpOnly, 14 days).
@@ -45,6 +48,19 @@ Stable staging host: `https://buck-buck-bronco-staging.vercel.app`
 8. Open **Your edits** in the header, footer, or dock (or `/review`) to see every change she submitted.
 
 Picture swaps and hide states also preview live on the staging pages.
+
+### Edit durability
+
+- Successful saves are confirmed in the shared Supabase inbox before the UI says they synced.
+- If the shared inbox is temporarily down, the edit is kept on this device and retries automatically — it does not disappear.
+- Open **Your edits** and hit **Refresh** to force a sync retry.
+
+### Status workflow (Damien / agents)
+
+- Leave reviewer notes **open** until Damien explicitly asks to implement them.
+- After implementing, verify the change on the **live** site (`buckbuckbronco.com`) or the intended host.
+- Only then mark the edit **done** (or **dismissed** if intentionally skipped).
+- Do not bulk-mark old notes done without a live-site verification pass.
 
 ## Local staging
 

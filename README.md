@@ -32,7 +32,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Staging review
 
-See [buck-buck-bronco-main/STAGING.md](./buck-buck-bronco-main/STAGING.md). Set `STAGING_PASSWORD` on the staging host. The review dock is **off** on `buckbuckbronco.com`.
+See [buck-buck-bronco-main/STAGING.md](./buck-buck-bronco-main/STAGING.md). Password is `SmileBucked13` (optional override: `STAGING_GATE_PASSWORD`). The review dock is **off** on `buckbuckbronco.com`.
 
 ## Deploy
 

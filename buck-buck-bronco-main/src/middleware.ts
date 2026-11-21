@@ -69,6 +69,14 @@ export function middleware(req: NextRequest) {
     return withStagingRobots(NextResponse.next(), host);
   }
 
+  // API callers need JSON errors, not an HTML redirect (that looks like "fetch failed").
+  if (pathname.startsWith("/api/")) {
+    return withStagingRobots(
+      NextResponse.json({ error: "Staging password required" }, { status: 401 }),
+      host,
+    );
+  }
+
   const url = req.nextUrl.clone();
   url.pathname = STAGING_GATE_PATH;
   url.searchParams.set("next", pathname + req.nextUrl.search);

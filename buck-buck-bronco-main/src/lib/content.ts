@@ -7,12 +7,12 @@ export const howToSteps = [
   {
     n: "02",
     title: "Spot a Bronco",
-    body: "Trailhead, grocery lot, office curb: when another Bronco shows up, you’ve found your next smile.",
+    body: "When you spot a parked Bronco, that’s your cue!",
   },
   {
     n: "03",
     title: "Leave a Buck",
-    body: "Leave the Buck on a Bronco… all Broncos count! Big, little, old, or new. The door handle, top of the mirror, or the side step are good places. Add a printable tag if you want them to know they’ve been Bucked.",
+    body: "Leave the Buck on a Bronco… all Broncos count! Big, little, old, or new. The door handle, top of the mirror, or the side step are good places. Add a tag (optional) that lets them know they’ve been Bucked. Putting the QR code on your tags is a plus! It leads them to our Facebook page, where you, and they, can find each other and say Hey!",
   },
   {
     n: "04",
@@ -38,7 +38,7 @@ export const faqs = [
   },
   {
     q: "Who started it?",
-    a: "Melissa Patterson, a Midwest Ford fan who pre-ordered a returning Bronco the moment she could. Shortly after that, Buck Buck Bronco was born. She launched the Facebook group in May 2021, well before her own truck arrived after she waited for over a year.",
+    a: "Melissa Patterson, a Midwest Ford Girl who pre-ordered her Gen6 Bronco the moment the order banks opened. She had owned several Jeeps and loved Ducking, but wanted Bronco owners to share the fun too. She launched the Buck Buck Bronco Facebook group in May 2021 — her Badlands Sasquatch didn’t arrive until February 2022.",
   },
   {
     q: "Do you sell official merch?",
@@ -62,9 +62,9 @@ export const storyBeats = {
   eyebrow: "The story",
   title: "A Midwest spark that went nationwide",
   lead:
-    "Melissa Patterson pre-ordered a returning Bronco the moment she could. Shortly after that, Buck Buck Bronco was born, giving Bronco owners their own way to share a smile.",
+    "Melissa Patterson pre-ordered her Gen6 Bronco the moment the order banks opened. She had owned several Jeeps, and loved Ducking, but deep down, she was a Ford Girl. She wanted to share the fun with Bronco owners, thus came the inspiration for Buck Buck Bronco.",
   body: [
-    "She talked it through with Allison Parliament, who started Duck Duck Jeep. Allison was all for it. With that encouragement, Melissa launched the Buck Buck Bronco Facebook group in May 2021, months before her own Bronco finally arrived after she waited for over a year.",
+    "She first messaged Allison Parliament, who started Duck Duck Jeep. Allison was all for it. With that encouragement, Melissa launched the Buck Buck Bronco Facebook group in May 2021. Her Badlands Sasquatch didn’t arrive until February of 2022.",
     "What began in the Midwest is now a nationwide way of spreading joy: leave a small token, add a printed tag if you like, and brighten another Bronco owner’s day.",
   ],
 } as const;
@@ -74,8 +74,15 @@ export const authenticityBeat = {
   eyebrow: "The real deal",
   title: "A mark the community knows",
   lead:
-    "This chrome bucking-horse emblem is how Bronco owners recognize the Buck Buck Bronco tradition in the wild. The same horse that rides with the community from day one.",
+    "This chrome Bronco emblem is how you know you’re in the right place on Facebook. There are many copycats, but only one Original! We have over 33,000 Buckers!",
   alt: "Chrome Ford Bronco bucking-horse emblem resting on brown leather, a mark of the Buck Buck Bronco tradition",
+} as const;
+
+export const cardsBeat = {
+  kicker: "Printable cards",
+  title: "You’ve been Bucked",
+  lead:
+    "We have free printable cards available on our Facebook page, and the QR code is there too. It leads the Buckee to the page. You can create your own tags or use ours. The point is not to spend a bunch of money. In fact, you are welcome to just leave a Buck tag without a Buck! A hand written note saying “Nice Bronco” can make someone’s day!",
 } as const;
 
 export const findBucks = {

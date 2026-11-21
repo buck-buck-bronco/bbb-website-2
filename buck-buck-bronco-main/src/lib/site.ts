@@ -1,11 +1,16 @@
 const definition =
   "Buck Buck Bronco is the Ford Bronco community’s newest tradition: a small token and a printed tag equals a random act of kindness.";
 
+/** Short hero support line from Melissa’s Oct staging notes. */
+const heroSupport = "The Bronco Community’s newest trend";
+
 export const siteConfig = {
   name: "Buck Buck Bronco",
   tagline: "Share a Smile.",
-  /** One quotable sentence for the hero and answer engines. */
+  /** One quotable sentence for answer engines / meta. */
   definition,
+  /** Short supporting sentence under the hero brand + headline. */
+  heroSupport,
   description: `${definition} Founded by Melissa Patterson from the Midwest.`,
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://buckbuckbronco.com",
   email: "melissa@buckbuckbronco.com",
@@ -24,8 +29,8 @@ export const siteConfig = {
     },
   },
   images: {
-    /** Horse mark only (no lettering, no square border) */
-    logo: "/brand/buck-buck-bronco-mark.webp",
+    /** Chrome bucking-horse mark, mirrored to face right (Melissa Oct note). */
+    logo: "/brand/buck-buck-bronco-mark-chrome.webp",
     /** Full-bleed hero: orange Bronco on mountain road */
     hero: "/images/bronco-orange-trail.webp",
     /** Story / split: black Bronco at the cliffs */
